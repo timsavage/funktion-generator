@@ -1,16 +1,18 @@
 #### Project configuration options ####
 
 # Name of target controller
-MCU = atmega328p
+MCU = atmega128
+#MCU = atmega328p
 
 # Project name
-PROJECT_NAME = funktion_gen
+PROJECT_NAME = dds_gen
 
 # MCU clock frequency - Higher the better an AVR can be run at 30Mhz.
 # Remember to update the step constant if this value is changed
-CLOCK_FREQ = 16000000UL  # 16 MHz
-#CLOCK_FREQ = 20000000UL  # 20 MHz
-#CLOCK_FREQ = 30000000UL  # 30 MHz
+#CPU_FREQ = 8000000  # 8 MHz
+CPU_FREQ = 16000000  # 16 MHz
+#CPU_FREQ = 20000000  # 20 MHz
+#CPU_FREQ = 30000000  # 30 MHz
 
 # DDS step constant
 #
@@ -58,7 +60,7 @@ AVRDUDE_PROGRAMMER = usbtiny
 
 #### Flags
 
-DEFINES = -DF_CPU=$(CLOCK_FREQ) -DDDS_FIXED_CONSTANT=$(DDS_FIXED_CONSTANT)
+DEFINES = -DF_CPU=$(CPU_FREQ)UL -DDDS_FIXED_CONSTANT=$(DDS_FIXED_CONSTANT)
 
 # Compiler
 override CFLAGS = -I. $(INCLUDES) -g -O$(OPTIMIZE) -mmcu=$(MCU) $(DEFINES) \
@@ -88,7 +90,7 @@ TRG = $(PROJECT_NAME).out
 DUMPTRG = $(PROJECT_NAME).s
 
 HEXROMTRG = $(PROJECT_NAME).hex
-HEXTRG = $(HEXROMTRG) $(PROJECT_NAME).ee.hex
+HEXTRG = $(HEXROMTRG) # $(PROJECT_NAME).ee.hex
 GDBINITFILE = gdbinit-$(PROJECT_NAME)
 
 # Filter files by type
@@ -119,6 +121,10 @@ fuses:
 
 install: fuses upload
 
+sim: hex
+	# Simulavr 0.1.2
+	simulavr -d $(MCU) -c $(CPU_FREQ) $(HEXTRG) -g -p 5566
+		
 # Linking
 $(TRG): $(OBJS) 
 	$(CC) $(LDFLAGS) -o $(TRG) $(OBJS)
