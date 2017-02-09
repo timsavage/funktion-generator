@@ -147,13 +147,13 @@ MAIN:
 	ldi	STEP_LH, 0x35
 	ldi	STEP_HL, 0x0
 
-LOOP:
-	add	FIX_L, STEP_LL			// 1 clock
+// DDS run loop
+DDS:	add	FIX_L, STEP_LL			// 1 clock
 	adc	FIX_H, STEP_LH			// 1 clock
 	adc	WT_L, STEP_HL			// 1 clock
 	ld	WT_V, Z				// 2 clocks
 	out	_SFR_IO_ADDR(PORTD), WT_V	// 1 clock
-	rjmp	LOOP				// 2 clocks
+	rjmp	DDS				// 2 clocks
 						// --------
 						// 8 clocks
 
