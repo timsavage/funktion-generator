@@ -17,6 +17,31 @@
 #define STEP_HL r26
 #define STEP_LH r25
 #define STEP_LL r24
+#define ACTIVE	r23
+
+// Control
+#define CMD_NOOP	0x00
+#define CMD_START 	0x01
+#define CMD_STOP 	0x02
+#define CMD_CLR		0x04
+
+// Increment
+#define CMD_DEC1	0x11
+#define CMD_DEC10	0x12
+#define CMD_DEC100	0x14
+#define CMD_DEC1000	0x18
+#define CMD_INC1	0x21
+#define CMD_INC10	0x22
+#define CMD_INC100	0x24
+#define CMD_INC1000	0x28
+
+// Set
+#define CMD_SET_F	0x41
+#define CMD_SET_WF	0x42
+
+// Get
+#define CMD_GET_F	0x81
+#define CMD_GET_WF	0x82
 
 .section 	.text
 .org 0
@@ -124,34 +149,28 @@ Square:		// Square Wave table
  ***********************************************/
  
 MAIN:
-//	ldi	r16, RAMEND	// Setup stack pointer
-//	out	SPL, r16
-
-	sei			// Enable global interrupts
+	sei			; Enable global interrupts
 
 	ser	TMP
-	out 	DDRD, TMP	// Set PORTD as outputs
+	out 	DDRD, TMP	; Set PORTD as outputs
 	
-	// Set sinewave as the default
-	ldi	WT_H, 1
+	ldi	WT_H, 1		; Set to sine wave
 	ldi	WT_L, 0
-
-	// Clear counter
-	clr	FIX_H
+	clr	FIX_H		; Clear offset counter
 	clr	FIX_L
+	clr	ACTIVE		; Default to not active
 
-	// Setup steps
-	ldi	STEP_LL, 0x55
+	ldi	STEP_LL, 0x55 	; Default stepsize to ~1Khz
 	ldi	STEP_LH, 0x35
 	ldi	STEP_HL, 0x0
 
 // DDS run loop
-DDS:	add	FIX_L, STEP_LL			// 1 clock
-	adc	FIX_H, STEP_LH			// 1 clock
-	adc	WT_L, STEP_HL			// 1 clock
-	ld	WT_V, Z				// 2 clocks
-	out	_SFR_IO_ADDR(PORTD), WT_V	// 1 clock
-	rjmp	DDS				// 2 clocks
-						// --------
-						// 8 clocks
+DDS:	add	FIX_L, STEP_LL			; 1 clock
+	adc	FIX_H, STEP_LH			; 1 clock
+	adc	WT_L, STEP_HL			; 1 clock
+	ld	WT_V, Z				; 2 clocks
+	out	_SFR_IO_ADDR(PORTD), WT_V	; 1 clock
+	rjmp	DDS				; 2 clocks
+						; --------
+						; 8 clocks
 
