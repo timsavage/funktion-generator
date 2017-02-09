@@ -9,10 +9,10 @@ PROJECT_NAME = dds_gen
 
 # MCU clock frequency - Higher the better an AVR can be run at 30Mhz.
 # Remember to update the step constant if this value is changed
-#CPU_FREQ = 8000000  # 8 MHz
-CPU_FREQ = 16000000  # 16 MHz
-#CPU_FREQ = 20000000  # 20 MHz
-#CPU_FREQ = 30000000  # 30 MHz
+#CPU_FREQ = 8000000# 8 MHz
+CPU_FREQ = 16000000# 16 MHz
+#CPU_FREQ = 20000000# 20 MHz
+#CPU_FREQ = 30000000# 30 MHz
 
 # DDS step constant
 #
@@ -35,18 +35,12 @@ CPU_FREQ = 16000000  # 16 MHz
 # provides all the nessasary calulations:
 #
 # https://docs.google.com/spreadsheets/d/1Oab6_2TZ5SzAQHbTxMHLZFGgJnOQwO2SQYt80mpjkCc/edit?usp=sharing
-DDS_FIXED_CONSTANT = 9.437184  # 16Mhz
-#DDS_FIXED_CONSTANT = 7.5497472  # 20Mhz
-#DDS_FIXED_CONSTANT = 5.0331648  # 30Mhz
+DDS_FIXED_CONSTANT = 9.437184# 16Mhz
+#DDS_FIXED_CONSTANT = 7.5497472# 20Mhz
+#DDS_FIXED_CONSTANT = 5.0331648# 30Mhz
 
-# Source files
+# Source file
 SRC = main.S
-
-# Additional include paths
-INCLUDES = 
-
-# Libraries to link
-LIBS =
 
 # Optimisation
 # use s (size opt), 1, 2, 3 or 0 (off)
@@ -62,17 +56,9 @@ AVRDUDE_PROGRAMMER = usbtiny
 
 DEFINES = -DF_CPU=$(CPU_FREQ)UL -DDDS_FIXED_CONSTANT=$(DDS_FIXED_CONSTANT)
 
-# Compiler
-override CFLAGS = -I. $(INCLUDES) -g -O$(OPTIMIZE) -mmcu=$(MCU) $(DEFINES) \
-		-Wall -Werror -Wl,-section-start=.WaveBuffer=0x00800300 \
-		-pedantic -pedantic-errors -std=gnu99 \
-		-fpack-struct -fshort-enums -funsigned-char -funsigned-bitfields -ffunction-sections
-
 # Assembler
-override ASMFLAGS = -I. $(INCLUDES) -mmcu=$(MCU) $(DEFINES) -x assembler-with-cpp
+override AFLAGS = -mmcu=$(MCU) $(DEFINES) -x assembler-with-cpp
 
-# Linker
-override LDFLAGS = -Wl,-Map,$(TRG).map 
 
 #### Executables
 
@@ -90,19 +76,8 @@ TRG = $(PROJECT_NAME).out
 DUMPTRG = $(PROJECT_NAME).s
 
 HEXROMTRG = $(PROJECT_NAME).hex
-HEXTRG = $(HEXROMTRG) # $(PROJECT_NAME).ee.hex
+HEXTRG = $(HEXROMTRG) $(PROJECT_NAME).ee.hex
 GDBINITFILE = gdbinit-$(PROJECT_NAME)
-
-# Filter files by type
-CFILES = $(filter %.c, $(SRC))
-ASMFILES = $(filter %.S, $(SRC))
-
-# Generate list of object files
-OBJS = $(CFILES:.c=.c.o) $(ASMFILES:.S=.S.o)
-
-# Define .lst files
-LST = $(filter %.lst, $(OBJS:.o=.lst))
-
 
 # Build all
 all: $(TRG)
@@ -123,18 +98,10 @@ install: fuses upload
 
 sim: hex
 	# Simulavr 0.1.2
-	simulavr -d $(MCU) -c $(CPU_FREQ) $(HEXTRG) -g -p 5566
+	simulavr -d $(MCU) -c $(CPU_FREQ) $(HEXROMTRG) -g -p 5566
 		
-# Linking
-$(TRG): $(OBJS) 
-	$(CC) $(LDFLAGS) -o $(TRG) $(OBJS)
-
-# Generate object files
-%.c.o: src/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-%.S.o: src/%.S
-	$(CC) $(ASMFLAGS) -c $< -o $@
+$(TRG): src/$(SRC)
+	$(CC) $(AFLAGS) -c src/$(SRC) -o $(TRG) -g
 
 # Generate hex
 %.hex: %.out
