@@ -148,21 +148,24 @@ Square:		// Square Wave table
  * Code
  ***********************************************/
  
-MAIN:
-	sei			; Enable global interrupts
+MAIN:	sei			; Enable global interrupts
 
 	ser	TMP
 	out 	DDRD, TMP	; Set PORTD as outputs
 	
 	ldi	WT_H, 1		; Set to sine wave
-	ldi	WT_L, 0
-	clr	FIX_H		; Clear offset counter
-	clr	FIX_L
 	clr	ACTIVE		; Default to not active
 
 	ldi	STEP_LL, 0x55 	; Default stepsize to ~1Khz
 	ldi	STEP_LH, 0x35
 	ldi	STEP_HL, 0x0
+
+RESET:	ldi	WT_L, 0		; Clear wavetable offset
+	clr	FIX_H		; Clear offset counter
+	clr	FIX_L
+
+HOLD:	sbrs	ACTIVE, 0	; Wait to be made active
+	rjmp	HOLD		
 
 // DDS run loop
 DDS:	add	FIX_L, STEP_LL			; 1 clock
@@ -170,7 +173,8 @@ DDS:	add	FIX_L, STEP_LL			; 1 clock
 	adc	WT_L, STEP_HL			; 1 clock
 	ld	WT_V, Z				; 2 clocks
 	out	_SFR_IO_ADDR(PORTD), WT_V	; 1 clock
+	sbrc	ACTIVE, 0			; 1 clock (if unset)
 	rjmp	DDS				; 2 clocks
-						; --------
+	rjmp	RESET				; --------
 						; 8 clocks
 
