@@ -28,28 +28,31 @@ Usage, caclulate the step size for a 1KHz wave, with 24bit bytes split out::
     
 For more help::
 
-    $ ./dds-calc --help
-    usage: dds-calc [-h] [-c CLOCK_FREQ] [--cfreq-unit {Hz,KHz,MHz}]
-                    [-p CLOCKS_PER_CYCLE] [-t TABLE_SIZE] [-d]
-                    [TARGET_FREQ] [{Hz,KHz,MHz}]
+    $ dds-calc --help
+    usage: dds-calc [-h] [-c CLOCK_FREQ] [--cfreq-unit {Hz,kHz,MHz,GHz}]
+                    [-p CLOCKS_PER_CYCLE] [-t TABLE_SIZE] [-d] [-s {const,size}]
+                    [TARGET_FREQ] [{Hz,kHz,MHz,GHz}]
 
     Tool for calculating frequency constants
 
     positional arguments:
       TARGET_FREQ           Calculate a step size value for a target frequency
-      {Hz,KHz,MHz}          Unit of target frequency, default is Hz
+      {Hz,kHz,MHz,GHz}      Unit of target frequency, default is Hz
 
     optional arguments:
       -h, --help            show this help message and exit
       -c CLOCK_FREQ, --cfreq CLOCK_FREQ
                             Frequency of MCU
-      --cfreq-unit {Hz,KHz,MHz}
+      --cfreq-unit {Hz,kHz,MHz,GHz}
                             Unit/Multiplier of cfreq value, default is Mhz
       -p CLOCKS_PER_CYCLE, --cpc CLOCKS_PER_CYCLE
                             Number of clock ticks in each cycle of DDS loop.
       -t TABLE_SIZE, --table-size TABLE_SIZE
                             Size of DDS wave table (this should be 256)
       -d, --decompose-step  Decompose step constant into individual bytes
+      -s {const,size}, --single {const,size}
+                            Return a single value either step const or size. For
+                            use in scripts.
 
 
 wavetables.py
