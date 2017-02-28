@@ -1,0 +1,95 @@
+#!/usr/bin/env python
+from __future__ import print_function, division, unicode_literals
+
+import argparse
+import math
+import sys
+
+
+FREQ_SCALE = {
+    "Hz": 1.0,
+    "kHz": 1000.0,
+    "MHz": 1000000.0,
+    "GHz": 1000000000.0,
+}
+
+
+def get_args():
+    parser = argparse.ArgumentParser("dds-calc", description="Tool for calculating frequency constants")
+    parser.add_argument("-c", "--cfreq", dest="clock_freq", default=16, type=float,
+                        help="Frequency of MCU")
+    parser.add_argument("--cfreq-unit", dest='freq_unit', choices=FREQ_SCALE.keys(), default="MHz",
+                        help="Unit/Multiplier of cfreq value, default is Mhz")
+    parser.add_argument("-p", "--cpc", dest="clocks_per_cycle", default=8, type=int,
+                        help="Number of clock ticks in each cycle of DDS loop.")
+    parser.add_argument("-t", "--table-size", dest="table_size", default=256, type=int,
+                        help="Size of DDS wave table (this should be 256)")
+
+    parser.add_argument("TARGET_FREQ", nargs="?", type=float,
+                        help="Calculate a step size value for a target frequency")
+    parser.add_argument("TARGET_UNIT", nargs="?", default="Hz", choices=FREQ_SCALE.keys(),
+                        help="Unit of target frequency, default is Hz")
+    parser.add_argument("-d", "--decompose-step", dest="decompose_step", action="store_true",
+                        help="Decompose step constant into individual bytes")
+    parser.add_argument("-s", "--single", dest="single", choices=('const', 'size'),
+                        help="Return a single value either step const or size. For use in "
+                             "scripts.")
+
+    opts = parser.parse_args()
+
+    # Check
+    if opts.single == 'size' and not opts.TARGET_FREQ:
+        print("TARGET_FREQ is required when --single size is specified.", file=sys.stderr)
+        exit(2)
+    
+    return opts
+
+
+def main():
+    opts = get_args()
+
+    cfreq = opts.clock_freq * FREQ_SCALE[opts.freq_unit]
+    cpc = opts.clocks_per_cycle
+    wts = opts.table_size
+
+    step_constant = (wts * math.pow(wts, 2) * cpc) / cfreq
+    if opts.single == 'const':
+        print("{:0.6f}".format(step_constant))
+        return
+
+    elif not opts.single:
+        print("-" * 40)
+        print("Clock Frequency:  {}{} ({}Hz)".format(opts.clock_freq, opts.freq_unit, cfreq))
+        print("Clocks per Cycle: {}".format(cpc))
+        print("Wave table size:  {}".format(wts))
+        print("-" * 40)
+        print("Step Constant:    {:0.6f}".format(step_constant))
+
+    if opts.TARGET_FREQ:
+        target_freq = opts.TARGET_FREQ * FREQ_SCALE[opts.TARGET_UNIT]
+        step_size = int((target_freq * step_constant) + 0.5)
+        actual_freq = step_size / step_constant
+        error = ((actual_freq/target_freq) - 1) * 100
+        step_size_bytes = ['0x{:02X}'.format(step_size >> (b * 8) & 0xFF) for b in range(2, -1, -1)]
+
+        if opts.single:
+            if opts.decompose_step:
+                print('\t'.join(step_size_bytes))
+            else:
+                print(str(step_size))
+            return
+
+        print("Step size:        {} @ {}{}".format(step_size, opts.TARGET_FREQ, opts.TARGET_UNIT))
+        if opts.decompose_step:
+            print("Step size bytes:  {}, {}, {}".format(*step_size_bytes))
+
+        print()
+        print("Actual Freq:      {:0.6f}Hz".format(actual_freq))
+        print("Freq Error:       {:0.6f}%".format(error))
+
+    print("-" * 40)
+
+
+if __name__ == '__main__':
+    main()
+
