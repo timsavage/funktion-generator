@@ -7,7 +7,7 @@
 ##############################################################################
 # Setup
 
-PROJECT=ddsGen
+PROJECT=dds-gen
 
 # Target hardward
 MCU=atmega328p
