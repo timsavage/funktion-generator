@@ -1,22 +1,51 @@
 from __future__ import absolute_import
 import sys
 
-from PySide.QtGui import *
+from PySide import QtCore, QtGui
 
 from wave_editor._ui.main_window import Ui_MainWindow
 from wave_editor._ui.wave_editor import Ui_EditorWindow
 
-app = QApplication(sys.argv)
+app = QtGui.QApplication(sys.argv)
 
 
-class EditorPanel(QMdiSubWindow):
-    def __init__(self, parent):
-        super(EditorPanel, self).__init__(parent)
-        self.ui = Ui_EditorWindow()
-        self.ui.setupUi(self)
+class WaveDocumentEditor(QtGui.QGraphicsView):
+    sequenceNumber = 0
+
+    def __init__(self):
+        super(WaveDocumentEditor, self).__init__()
+
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.isUntitled = True
+
+    def newFile(self):
+        self.isUntitled = True
+        self.sequenceNumber += 1
+        self.currentFile = "wave{}.wave".format(self.sequenceNumber)
+        self.setWindowTitle(self.currentFile + "[*]")
+
+        self.document().contentsChanged.connect(self.documentWasModified)
+
+    def loadFile(self, file_name):
+        file = QtCore.QFile(file_name)
+        if not file.open(QtCore.QFile.ReadOnly):
+            QtGui.QMessageBox.warning(self, "Wave Editor", "Cannot read file: {}\n{}".format(
+                file_name, file.errorString()
+            ))
+            return False
+
+        QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
+
+        # Load data
+        QtGui.QApplication.restoreOverrideCursor()
+
+        self.setCurrentFile(file_name)
+        self.document().contentsChanged.connect(self.documentWasModified)
+
+        return True
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.ui = Ui_MainWindow()
@@ -24,11 +53,13 @@ class MainWindow(QMainWindow):
 
         self.ui.action_Quit.triggered.connect(self.action_Quit__triggered)
 
-        self._editors = []
-        editor = EditorPanel(self)
-        self._editors.append(editor)
-        self.ui.mdiArea.addSubWindow(editor)
-        editor.show()
+        child = self.createEditorChild()
+        child.show()
+
+    def createEditorChild(self):
+        child = WaveDocumentEditor()
+        self.ui.mdiArea.addSubWindow(child)
+        return child
 
     def action_Quit__triggered(self):
         app.exit()
