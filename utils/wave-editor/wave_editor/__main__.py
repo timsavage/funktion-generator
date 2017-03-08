@@ -5,8 +5,17 @@ from PySide import QtCore, QtGui
 
 from wave_editor._ui.main_window import Ui_MainWindow
 from wave_editor._ui.wave_editor import Ui_EditorWindow
+from wave_editor._ui.about_dialog import Ui_AboutDialog
 
 app = QtGui.QApplication(sys.argv)
+
+
+class AboutDialog(QtGui.QDialog):
+    def __init__(self):
+        super(AboutDialog, self).__init__()
+
+        self.ui = Ui_AboutDialog()
+        self.ui.setupUi(self)
 
 
 class WaveDocumentEditor(QtGui.QGraphicsView):
@@ -20,11 +29,9 @@ class WaveDocumentEditor(QtGui.QGraphicsView):
 
     def newFile(self):
         self.isUntitled = True
-        self.sequenceNumber += 1
+        WaveDocumentEditor.sequenceNumber += 1
         self.currentFile = "wave{}.wave".format(self.sequenceNumber)
         self.setWindowTitle(self.currentFile + "[*]")
-
-        self.document().contentsChanged.connect(self.documentWasModified)
 
     def loadFile(self, file_name):
         file = QtCore.QFile(file_name)
@@ -40,7 +47,6 @@ class WaveDocumentEditor(QtGui.QGraphicsView):
         QtGui.QApplication.restoreOverrideCursor()
 
         self.setCurrentFile(file_name)
-        self.document().contentsChanged.connect(self.documentWasModified)
 
         return True
 
@@ -51,19 +57,36 @@ class MainWindow(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        self.ui.action_New.triggered.connect(self.newFile)
+        self.ui.action_Open.triggered.connect(self.openFile)
         self.ui.action_Quit.triggered.connect(self.action_Quit__triggered)
+        self.ui.action_About.triggered.connect(self.action_About__triggered)
 
-        child = self.createEditorChild()
-        child.show()
+        self.newFile()
 
     def createEditorChild(self):
         child = WaveDocumentEditor()
         self.ui.mdiArea.addSubWindow(child)
         return child
 
+    def newFile(self):
+        child = self.createEditorChild()
+        child.newFile()
+        child.show()
+
+    def openFile(self):
+        file_name = QtGui.QFileDialog.getOpenFileName(self, "Open wave table...", "*.wave|Wave table")
+        if file_name:
+            child = self.createEditorChild()
+            child.loadFile(file_name)
+            child.show()
+
     def action_Quit__triggered(self):
         app.exit()
-    
+
+    def action_About__triggered(self):
+        AboutDialog().exec_()
+
 
 def main():
     main_window = MainWindow()
