@@ -1,14 +1,18 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 import functools
+import string
 import struct
 import operator
 
 from wave_editor import wave_functions
 
+WAVE_VERSION = 1
 WAVE_HEADER_ID = 'wave'
 wave_header = struct.Struct("BBH")
 wave_sample = struct.Struct("B")
+
+ASM_NAME_CHARS = string.letters + string.digits + '_'
 
 
 class WaveTable(object):
@@ -33,8 +37,8 @@ class WaveTable(object):
     L = Length of table
 
     """
-    _wave_length = wave_functions.WAVE_LENGTH
-    _dynamic_range = wave_functions.DYNAMIC_RANGE
+    wave_length = wave_functions.WAVE_LENGTH
+    dynamic_range = wave_functions.DYNAMIC_RANGE
 
     @classmethod
     def read(cls, f):
@@ -46,7 +50,7 @@ class WaveTable(object):
         # Read header and check version
         data = f.read(wave_header.size)
         version, checksum, length = wave_header.unpack(data)
-        if version != 1:
+        if version != WAVE_VERSION:
             raise Exception("Unknown file version.")
 
         # Load/parse data
@@ -60,7 +64,7 @@ class WaveTable(object):
         return cls(wave)
 
     def __init__(self, wave=None):
-        assert wave is None or len(wave) == self._wave_length
+        assert wave is None or len(wave) == self.wave_length
 
         self.modified = False
         self._table = wave or wave_functions.zero_wave()
@@ -69,7 +73,7 @@ class WaveTable(object):
         return self._table[idx]
 
     def __setitem__(self, idx, value):
-        if not(0 <= value <= self._dynamic_range):
+        if not(0 <= value <= self.dynamic_range):
             raise ValueError("Value outside dynamic range.")
         self._table[idx] = value
 
@@ -80,7 +84,6 @@ class WaveTable(object):
         """
         Zero the wave
         """
-        self.modified = True
         return self.insert(wave_functions.zero_wave())
 
     def insert(self, wave, offset=0):
@@ -95,14 +98,14 @@ class WaveTable(object):
         :type offset: list(byte)
         :return:
         """
-        self.modified = True
-
         # Get data as a list
         wave = list(wave)
 
         # Check size of wave data
-        if len(wave) + offset > self._wave_length:
+        if len(wave) + offset > self.wave_length:
             raise IndexError("Overflow of wave data.")
+
+        self.modified = True
 
         # Copy into wave table
         for idx, sample in enumerate(wave):
@@ -122,7 +125,6 @@ class WaveTable(object):
         """
         Write wave table to a file (or file like) object
         """
-        version = 1
         length = len(self._table)
         checksum = functools.reduce(operator.xor, self._table)
 
@@ -130,9 +132,20 @@ class WaveTable(object):
         f.write(WAVE_HEADER_ID)
 
         # Write header
-        f.write(wave_header.pack(version, checksum, length))
+        f.write(wave_header.pack(WAVE_VERSION, checksum, length))
 
         # Write samples
         sample = struct.Struct("B")
         for s in self._table:
             f.write(sample.pack(s))
+
+    def export_gcc_asm(self, name, f):
+        """
+        Export wave table as an GCC Assembler data table.
+        """
+        name = ''.join(c for c in name.replace(' ', '_') if c in ASM_NAME_CHARS)
+        print("{}:".format(name), file=f)
+
+        for r in range(0, self.wave_length / 16):
+            samples = self._table[r * 16:(r + 1) * 16]
+            print('\t.byte\t', ','.join("0x{:02X}".format(s) for s in samples), sep='', file=f)
