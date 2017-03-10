@@ -30,7 +30,7 @@ def square_wave():
     Generate a square wave.
     """
     half_wave = WAVE_LENGTH >> 1
-    high = DYNAMIC_RANGE,
+    high = DYNAMIC_RANGE
     low = 0
     return [high if x < half_wave else low for x in range(WAVE_LENGTH)]
 
@@ -50,7 +50,7 @@ def triangle_wave():
         elif quarter_wave <= x < three_quarter_wave:
             return DYNAMIC_RANGE - (x - quarter_wave) * 2
         else:
-            return ((x - three_quarter_wave) * 2) - 1
+            return (x - three_quarter_wave) * 2
 
     return [wave_func(x) for x in range(WAVE_LENGTH)]
 

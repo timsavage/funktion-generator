@@ -21,23 +21,23 @@ class WaveTable(object):
     The on disk representation::
 
             | Header |
-        0000|XXXXXVLC|
+        0000|XXXXVCLL|
         0008|DDDDDDDD|
         000F|DDDDDDDD|
             | ...... |
         0108|DDDDDDDD|
 
-    X = Header token value ".wave"
+    X = Header token value "wave"
     V = File version
-    L = Length of table
     C = Checksum of table (XOR)
+    L = Length of table
 
     """
     _wave_length = wave_functions.WAVE_LENGTH
     _dynamic_range = wave_functions.DYNAMIC_RANGE
 
     @classmethod
-    def load(cls, f):
+    def read(cls, f):
         # Check file id
         file_id = f.read(4)
         if file_id != WAVE_HEADER_ID:
@@ -62,6 +62,7 @@ class WaveTable(object):
     def __init__(self, wave=None):
         assert wave is None or len(wave) == self._wave_length
 
+        self.modified = False
         self._table = wave or wave_functions.zero_wave()
 
     def __getitem__(self, idx):
@@ -72,10 +73,14 @@ class WaveTable(object):
             raise ValueError("Value outside dynamic range.")
         self._table[idx] = value
 
+    def clear_modified(self):
+        self.modified = False
+
     def zero(self):
         """
         Zero the wave
         """
+        self.modified = True
         return self.insert(wave_functions.zero_wave())
 
     def insert(self, wave, offset=0):
@@ -90,6 +95,8 @@ class WaveTable(object):
         :type offset: list(byte)
         :return:
         """
+        self.modified = True
+
         # Get data as a list
         wave = list(wave)
 
@@ -103,9 +110,17 @@ class WaveTable(object):
 
         return self
 
-    def save(self, f):
+    def mirror(self):
+        self.modified = True
+        self._table = wave_functions.mirror_wave(self._table)
+
+    def invert(self):
+        self.modified = True
+        self._table = wave_functions.invert_wave(self._table)
+
+    def write(self, f):
         """
-        Save wave table to a file (or file like) object
+        Write wave table to a file (or file like) object
         """
         version = 1
         length = len(self._table)
