@@ -2,6 +2,7 @@ from PySide import QtGui
 
 from .._ui.about_dialog import Ui_AboutDialog
 from .._ui.asm_export_dialog import Ui_ASMExportDialog
+from ..wave_file import ExportAsmFormatter
 
 
 class AboutDialog(QtGui.QDialog):
@@ -42,7 +43,8 @@ class AsmExportDialog(QtGui.QDialog):
         self.ui = Ui_ASMExportDialog()
         self.ui.setupUi(self)
 
-        self.ui.asmStyleCombo.addItem("GCC ASM", "gccASM")
+        self.ui.asmStyleCombo.addItem("GCC ASM", ExportAsmFormatter.ASM_STYLE_GCC)
+        self.ui.asmStyleCombo.addItem("AVR Assembler", ExportAsmFormatter.ASM_STYLE_AVRASM2)
 
     def setAsmStyle(self, asmStyle):
         pass

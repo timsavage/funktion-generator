@@ -3,7 +3,7 @@ import sys
 
 from PySide import QtGui
 
-from wave_editor.gui import MainWindow
+from wave_editor.gui.main_window import MainWindow
 
 app = QtGui.QApplication(sys.argv)
 
