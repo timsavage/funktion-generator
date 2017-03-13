@@ -92,9 +92,9 @@ class WaveTable(object):
         :param wave: Iterable of bytes to insert into the wave table, this
             data must be no longer than the Wavelength.
         :type wave: iter<byte>
-        :param offset: List
-        :type offset: list(byte)
-        :return:
+        :param offset: Offset in wave table to begin insert
+        :type offset: int
+
         """
         # Get data as a list
         wave = list(wave)
@@ -108,6 +108,36 @@ class WaveTable(object):
         # Copy into wave table
         for idx, sample in enumerate(wave):
             self[idx + offset] = sample
+
+        return self
+
+    def merge(self, wave, offset=0):
+        """
+        Merge wave data into the wave table. This involves generating an
+        average of the two waves.
+
+        The processes is simple, add the two waves before dividing by two
+        producing an average of the two wave forms.
+
+        :param wave: Iterable of bytes to insert into the wave table, this
+            data must be no longer than the Wavelength.
+        :type wave: iter<byte>
+        :param offset: Offset in wave table to begin merge
+        :type offset: int
+
+        """
+        # Get data as a list
+        wave = list(wave)
+
+        # Check size of wave data
+        if len(wave) + offset > self.wave_length:
+            raise IndexError("Overflow of wave data.")
+
+        self.modified = True
+
+        # Merge into wave table
+        for idx, sample in enumerate(wave):
+            self[idx + offset] = (self[idx + offset] + sample) >> 1
 
         return self
 
@@ -169,7 +199,7 @@ class ExportAsmFormatter(object):
     def __call__(self, f):
         if self.label_name:
             label_name = ''.join(c for c in self.label_name.replace(' ', '_') if c in self.ASM_LABEL_CHARS)
-            print("{}:".format(label_name, file=f))
+            print("{}:".format(label_name), file=f)
 
         if self.asm_style == self.ASM_STYLE_GCC:
             prefix = self.GCC_ROW_PREFIX
@@ -202,7 +232,7 @@ class ExportCFormatter(object):
             " * Exported from Wave Editor\n"
             " */\n\n"
             "#include <stdint.h>\n\n"
-            "const uint8_t {}[] = {".format(variable_name),
+            "const uint8_t {}[] = {{".format(variable_name),
             file=f
         )
 
