@@ -102,7 +102,7 @@
      </property>
      <addaction name="actionMergeSine"/>
      <addaction name="actionMergeSquare"/>
-     <addaction name="actionergeTriangle"/>
+     <addaction name="actionMergeTriangle"/>
      <addaction name="actionMergeSawtooth"/>
      <addaction name="actionMergeReverseSawtooth"/>
     </widget>
@@ -272,7 +272,7 @@
     <string>Ctrl+Shift+@</string>
    </property>
   </action>
-  <action name="actionergeTriangle">
+  <action name="actionMergeTriangle">
    <property name="text">
     <string>Triangle</string>
    </property>
