@@ -63,6 +63,7 @@
       <string>&amp;Export</string>
      </property>
      <addaction name="actionASMDataTable"/>
+     <addaction name="actionCDatatable"/>
     </widget>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
@@ -85,12 +86,29 @@
     <property name="title">
      <string>&amp;Wave Form</string>
     </property>
+    <widget class="QMenu" name="menuGenerate">
+     <property name="title">
+      <string>&amp;Generate</string>
+     </property>
+     <addaction name="actionSine"/>
+     <addaction name="actionSquare"/>
+     <addaction name="actionTriangle"/>
+     <addaction name="actionSawtooth"/>
+     <addaction name="actionReverseSawtooth"/>
+    </widget>
+    <widget class="QMenu" name="menuMergeWith">
+     <property name="title">
+      <string>&amp;Merge with</string>
+     </property>
+     <addaction name="actionMergeSine"/>
+     <addaction name="actionMergeSquare"/>
+     <addaction name="actionergeTriangle"/>
+     <addaction name="actionMergeSawtooth"/>
+     <addaction name="actionMergeReverseSawtooth"/>
+    </widget>
     <addaction name="actionZero"/>
-    <addaction name="actionSine"/>
-    <addaction name="actionSquare"/>
-    <addaction name="actionTriangle"/>
-    <addaction name="actionSawtooth"/>
-    <addaction name="actionReverseSawtooth"/>
+    <addaction name="menuGenerate"/>
+    <addaction name="menuMergeWith"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -200,7 +218,7 @@
   </action>
   <action name="actionZero">
    <property name="text">
-    <string>Zero</string>
+    <string>&amp;Zero</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+0</string>
@@ -231,6 +249,51 @@
    </property>
    <property name="statusTip">
     <string>Export the wave as a data table for GCC Assember.</string>
+   </property>
+  </action>
+  <action name="actionCDatatable">
+   <property name="text">
+    <string>C Data table...</string>
+   </property>
+  </action>
+  <action name="actionMergeSine">
+   <property name="text">
+    <string>Sine</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+!</string>
+   </property>
+  </action>
+  <action name="actionMergeSquare">
+   <property name="text">
+    <string>Square</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+@</string>
+   </property>
+  </action>
+  <action name="actionergeTriangle">
+   <property name="text">
+    <string>Triangle</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+#</string>
+   </property>
+  </action>
+  <action name="actionMergeSawtooth">
+   <property name="text">
+    <string>Sawtooth</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+$</string>
+   </property>
+  </action>
+  <action name="actionMergeReverseSawtooth">
+   <property name="text">
+    <string>Reverse Sawtooth</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+%</string>
    </property>
   </action>
  </widget>
