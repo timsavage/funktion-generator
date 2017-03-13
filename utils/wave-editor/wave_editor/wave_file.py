@@ -12,8 +12,6 @@ WAVE_HEADER_ID = 'wave'
 wave_header = struct.Struct("BBH")
 wave_sample = struct.Struct("B")
 
-ASM_NAME_CHARS = string.letters + string.digits + '_'
-
 
 class WaveTable(object):
     """
@@ -139,13 +137,43 @@ class WaveTable(object):
         for s in self._table:
             f.write(sample.pack(s))
 
-    def export_gcc_asm(self, name, f):
-        """
-        Export wave table as an GCC Assembler data table.
-        """
-        name = ''.join(c for c in name.replace(' ', '_') if c in ASM_NAME_CHARS)
-        print("{}:".format(name), file=f)
 
-        for r in range(0, self.wave_length / 16):
-            samples = self._table[r * 16:(r + 1) * 16]
-            print('\t.byte\t', ','.join("0x{:02X}".format(s) for s in samples), sep='', file=f)
+class ExportAsmFormatter(object):
+    """
+    Formatter that generates ASM.
+    """
+    ASM_STYLE_GCC = 'GCC'
+    ASM_STYLE_AVRASM2 = 'AVRASM2'
+
+    ASM_LABEL_CHARS = string.letters + string.digits + '_'
+
+    GCC_ROW_PREFIX = '\t.byte\t'
+    AVRASM2_ROW_PREFIX = '\t.DB\t'
+
+    def __init__(self, wave_table, label_name=None, asm_style=ASM_STYLE_GCC):
+        """
+        Initialise formatter
+
+        :param wave_table: Wave table to format
+        :type wave_table: WaveTable
+        :param label_name: Label to apply to wave table
+        :param asm_style: Style of ASM to generate; default is GCC
+
+        """
+        self.wave_table = wave_table
+        self.label_name = label_name
+        self.asm_style = asm_style
+
+    def __call__(self, f):
+        if self.label_name:
+            label_name = ''.join(c for c in self.label_name.replace(' ', '_') if c in self.ASM_LABEL_CHARS)
+            print("{}:".format(label_name, file=f))
+
+        if self.asm_style == self.ASM_STYLE_GCC:
+            prefix = self.GCC_ROW_PREFIX
+        else:
+            prefix = self.AVRASM2_ROW_PREFIX
+
+        for r in range(0, self.wave_table.wave_length / 16):
+            samples = self.wave_table[r * 16:(r + 1) * 16]
+            print(prefix, ','.join("0x{:02X}".format(s) for s in samples), sep='', file=f)
