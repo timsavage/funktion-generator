@@ -140,7 +140,9 @@ class WaveTable(object):
 
 class ExportAsmFormatter(object):
     """
-    Formatter that generates ASM.
+    Export a wave table to ASM source.
+
+    Supports both GCC and AVR Assembler (AVRASM2) style ASM style.
     """
     ASM_STYLE_GCC = 'GCC'
     ASM_STYLE_AVRASM2 = 'AVRASM2'
@@ -177,3 +179,35 @@ class ExportAsmFormatter(object):
         for r in range(0, self.wave_table.wave_length / 16):
             samples = self.wave_table[r * 16:(r + 1) * 16]
             print(prefix, ','.join("0x{:02X}".format(s) for s in samples), sep='', file=f)
+
+
+class ExportCFormatter(object):
+    """
+    Export a wave table to c source.
+    """
+    VARIABLE_NAME_CHARS = string.letters + string.digits + '_'
+
+    def __init__(self, wave_table, variable_name):
+        """
+        :type wave_table: WaveTable
+        :param variable_name: Name of the variable holding wave table
+        """
+        self.wave_table = wave_table
+        self.variable_name = variable_name
+
+    def __call__(self, f):
+        variable_name = ''.join(c for c in self.variable_name.replace(' ', '_') if c in self.VARIABLE_NAME_CHARS)
+        print(
+            "/**\n"
+            " * Exported from Wave Editor\n"
+            " */\n\n"
+            "#include <stdint.h>\n\n"
+            "const uint8_t {}[] = {".format(variable_name),
+            file=f
+        )
+
+        for r in range(0, self.wave_table.wave_length / 16):
+            samples = self.wave_table[r * 16:(r + 1) * 16]
+            print('\t', ','.join("0x{:02X}".format(s) for s in samples), sep='', file=f)
+
+        print("};", file=f)
