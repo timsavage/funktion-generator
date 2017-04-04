@@ -138,3 +138,9 @@ extern void loadBuiltinWave(WaveTable* wave, uint8_t waveID) {
   memcpy_P(wave->data, waveTables[waveID].data, WAVE_TABLE_LEN);
 }
 
+extern void loadWave(WaveTable* wave, uint8_t slotID) {
+}
+
+extern void storeWave(WaveTable* wave, uint8_t slotID) {
+}
+

@@ -19,6 +19,7 @@
 
 TFT_ILI9163C tft = TFT_ILI9163C(__TFT_CS, __TFT_DC);
 WaveTable currentWave = WaveTable();
+uint32_t currentFrequency = 1000; // 1kHz
 
 /**
  * Draw a wave table

@@ -54,4 +54,12 @@ void storeWave(WaveTable* wave, uint8_t slotID);
  */
 void loadWave(WaveTable* wave, uint8_t slotID);
 
+
+/**
+ * Manipulate waves
+ */
+
+void mirrorWave(WaveTable* wave);
+void invertWave(WaveTable* wave);
+
 #endif //!_WAVE_TABLES__H
