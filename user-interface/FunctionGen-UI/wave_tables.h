@@ -9,10 +9,21 @@
 
 #include <stdint.h>
 
+// Wave table constants
 const size_t WAVE_NAME_LEN = 17; // 16 Chars
-
 const size_t WAVE_TABLE_MAX = 0xFF;
 const size_t WAVE_TABLE_LEN = WAVE_TABLE_MAX + 1;
+const uint8_t WAVE_DYNAMIC_RANGE = 0xFF;
+
+// Result code defines
+#define WAVE_FILE_OK                   0
+#define WAVE_FILE_NOT_FOUND            1
+#define WAVE_FILE_INVALID_HEADER       2
+#define WAVE_FILE_UNKNOWN_VERSION      3
+#define WAVE_FILE_CHECKSUM_FAILED      4
+#define WAVE_FILE_ERROR_WRITING_HEADER 5
+#define WAVE_FILE_ERROR_WRITING_DATA   6
+#define WAVE_FILE_MAX_ERROR WAVE_FILE_ERROR_WRITING_DATA
 
 
 /**
@@ -25,41 +36,44 @@ typedef struct WaveTable {
 
 
 /**
- * Builtin waves
+ * Get an error message string from an error code.
+ * 
+ * @param error - Error code
+ * @return Return pointer to message.
  */
-const uint8_t WAVE_ZERO = 0;
-const uint8_t WAVE_SINE = 1;
-const uint8_t WAVE_SQUARE = 2;
-const uint8_t WAVE_TRIANGLE = 3;
-const uint8_t WAVE_SAWTOOTH = 4;
-const uint8_t WAVE_RSAWTOOTH = 5;
-const uint8_t WAVE_BUILTIN_COUNT = WAVE_RSAWTOOTH + 1;
+const char* wt_errorMessage(uint8_t error);
 
 /**
- * Load a builtin wave into a wave table.
+ * Load a wave table from ESP8266 filesystem.
+ * 
+ * @param wave - Pointer to a wavetable to load wave data into.
+ * @param path - Path to file.
+ * @return Result of load see WAVE_FILE_* for details.
  */
-void loadBuiltinWave(WaveTable* wave, uint8_t waveID);
+uint8_t wt_load(WaveTable* wave, char* path);
 
 /**
- * Custom waves
+ * Save a wave table to ESP8266 filesystem.
+ * 
+ * @param wave - Pointer to a wavetable to save.
+ * @param path - Path to file.
+ * @return Result of load see WAVE_FILE_* for details.
  */
+uint8_t wt_save(WaveTable* wave, char* path);
 
 /**
- * Store a wave table into a storage slot.
+ * Set wave table to zero.
  */
-void storeWave(WaveTable* wave, uint8_t slotID);
+void wt_zero(WaveTable* wave);
 
 /**
- * Load a wave table from a storage slot.
+ * Mirror the waveform
  */
-void loadWave(WaveTable* wave, uint8_t slotID);
-
+void wt_mirror(WaveTable* wave);
 
 /**
- * Manipulate waves
+ * Invert the waveform
  */
-
-void mirrorWave(WaveTable* wave);
-void invertWave(WaveTable* wave);
+void wt_invert(WaveTable* wave);
 
 #endif //!_WAVE_TABLES__H
