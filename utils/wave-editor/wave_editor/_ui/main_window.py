@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'resources/main_window.ui'
 #
-# Created: Tue Mar 14 09:16:37 2017
-#      by: pyside-uic 0.2.15 running on PySide 1.2.2
+# Created: Thu Apr  6 11:57:50 2017
+#      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -46,6 +46,8 @@ class Ui_MainWindow(object):
         self.menuMergeWith.setObjectName("menuMergeWith")
         self.menuTools = QtGui.QMenu(self.menubar)
         self.menuTools.setObjectName("menuTools")
+        self.menu_Edit = QtGui.QMenu(self.menubar)
+        self.menu_Edit.setObjectName("menu_Edit")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -94,6 +96,14 @@ class Ui_MainWindow(object):
         self.actionMergeSawtooth.setObjectName("actionMergeSawtooth")
         self.actionMergeReverseSawtooth = QtGui.QAction(MainWindow)
         self.actionMergeReverseSawtooth.setObjectName("actionMergeReverseSawtooth")
+        self.actionNormalise = QtGui.QAction(MainWindow)
+        self.actionNormalise.setObjectName("actionNormalise")
+        self.actionRectify = QtGui.QAction(MainWindow)
+        self.actionRectify.setObjectName("actionRectify")
+        self.actionUndo = QtGui.QAction(MainWindow)
+        self.actionUndo.setObjectName("actionUndo")
+        self.actionCentre = QtGui.QAction(MainWindow)
+        self.actionCentre.setObjectName("actionCentre")
         self.menuExport.addAction(self.actionASMDataTable)
         self.menuExport.addAction(self.actionCDatatable)
         self.menuFile.addAction(self.actionNew)
@@ -121,8 +131,14 @@ class Ui_MainWindow(object):
         self.menuWaveForm.addAction(self.menuGenerate.menuAction())
         self.menuWaveForm.addAction(self.menuMergeWith.menuAction())
         self.menuTools.addAction(self.actionInvert)
+        self.menuTools.addAction(self.actionRectify)
         self.menuTools.addAction(self.actionMirror)
+        self.menuTools.addAction(self.actionCentre)
+        self.menuTools.addSeparator()
+        self.menuTools.addAction(self.actionNormalise)
+        self.menu_Edit.addAction(self.actionUndo)
         self.menubar.addAction(self.menuFile.menuAction())
+        self.menubar.addAction(self.menu_Edit.menuAction())
         self.menubar.addAction(self.menuWaveForm.menuAction())
         self.menubar.addAction(self.menuTools.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
@@ -139,6 +155,7 @@ class Ui_MainWindow(object):
         self.menuGenerate.setTitle(QtGui.QApplication.translate("MainWindow", "&Generate", None, QtGui.QApplication.UnicodeUTF8))
         self.menuMergeWith.setTitle(QtGui.QApplication.translate("MainWindow", "&Merge with", None, QtGui.QApplication.UnicodeUTF8))
         self.menuTools.setTitle(QtGui.QApplication.translate("MainWindow", "&Tools", None, QtGui.QApplication.UnicodeUTF8))
+        self.menu_Edit.setTitle(QtGui.QApplication.translate("MainWindow", "&Edit", None, QtGui.QApplication.UnicodeUTF8))
         self.actionOpen.setText(QtGui.QApplication.translate("MainWindow", "&Open", None, QtGui.QApplication.UnicodeUTF8))
         self.actionOpen.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+O", None, QtGui.QApplication.UnicodeUTF8))
         self.actionQuit.setText(QtGui.QApplication.translate("MainWindow", "&Quit", None, QtGui.QApplication.UnicodeUTF8))
@@ -182,4 +199,12 @@ class Ui_MainWindow(object):
         self.actionMergeSawtooth.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+$", None, QtGui.QApplication.UnicodeUTF8))
         self.actionMergeReverseSawtooth.setText(QtGui.QApplication.translate("MainWindow", "Reverse Sawtooth", None, QtGui.QApplication.UnicodeUTF8))
         self.actionMergeReverseSawtooth.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+%", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionNormalise.setText(QtGui.QApplication.translate("MainWindow", "&Normalise", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionNormalise.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+E", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionRectify.setText(QtGui.QApplication.translate("MainWindow", "&Rectify", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionRectify.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+R", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionUndo.setText(QtGui.QApplication.translate("MainWindow", "Undo", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionUndo.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Z", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionCentre.setText(QtGui.QApplication.translate("MainWindow", "&Centre", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionCentre.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+K", None, QtGui.QApplication.UnicodeUTF8))
 

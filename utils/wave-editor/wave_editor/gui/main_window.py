@@ -21,10 +21,12 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionASMDataTable.triggered.connect(self.exportAsm)
         self.ui.actionCDatatable.triggered.connect(self.exportC)
         self.ui.actionClose.triggered.connect(self.ui.mdiArea.closeAllSubWindows)
-        self.ui.actionQuit.triggered.connect(self.action_Quit__triggered)
+        self.ui.actionQuit.triggered.connect(self.quit)
 
-        self.ui.actionZero.triggered.connect(self.applyZero)
+        self.ui.actionUndo.triggered.connect(self.undo)
+
         # Generate
+        self.ui.actionZero.triggered.connect(self.applyZero)
         self.ui.actionSine.triggered.connect(self.applySine)
         self.ui.actionSquare.triggered.connect(self.applySquare)
         self.ui.actionTriangle.triggered.connect(self.applyTriangle)
@@ -36,9 +38,12 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionMergeTriangle.triggered.connect(self.applyMergeTriangle)
         self.ui.actionMergeSawtooth.triggered.connect(self.applyMergeSawtooth)
         self.ui.actionMergeReverseSawtooth.triggered.connect(self.applyMergeReverseSawtooth)
-
+        # Tools
         self.ui.actionInvert.triggered.connect(self.invertWave)
         self.ui.actionMirror.triggered.connect(self.mirrorWave)
+        self.ui.actionCentre.triggered.connect(self.centreWave)
+        self.ui.actionNormalise.triggered.connect(self.normaliseWave)
+        self.ui.actionRectify.triggered.connect(self.rectifyWave)
 
         self.ui.actionAbout.triggered.connect(self.action_About__triggered)
 
@@ -52,22 +57,19 @@ class MainWindow(QtGui.QMainWindow):
             # self.writeSettings()
             event.accept()
 
-    def createEditorChild(self):
+    def newFile(self):
         child = WaveDocumentEditor()
         self.ui.mdiArea.addSubWindow(child)
-        return child
-
-    def newFile(self):
-        child = self.createEditorChild()
         child.newFile()
         child.show()
 
     def openFile(self):
         file_name, _ = QtGui.QFileDialog.getOpenFileName(self, "Open wave table...", "*.wave|Wave table")
         if file_name:
-            child = self.createEditorChild()
-            child.loadFile(file_name)
-            child.show()
+            child = WaveDocumentEditor()
+            if child.loadFile(file_name):
+                self.ui.mdiArea.addSubWindow(child)
+                child.show()           
 
     def save(self):
         if self.activeMdiChild and self.activeMdiChild.save():
@@ -89,8 +91,12 @@ class MainWindow(QtGui.QMainWindow):
         if self.activeMdiChild and self.activeMdiChild.saveAs():
             self.statusBar().showMessage("File saved", 2000)
 
-    def action_Quit__triggered(self):
+    def quit(self):
         QtGui.QApplication.quit()
+
+    def undo(self):
+        if self.activeMdiChild:
+            self.activeMdiChild.undo()
 
     def applyZero(self):
         if self.activeMdiChild:
@@ -138,11 +144,23 @@ class MainWindow(QtGui.QMainWindow):
 
     def mirrorWave(self):
         if self.activeMdiChild:
-            self.activeMdiChild.mirrorWave()
+            self.activeMdiChild.applyFunction(wave_functions.mirror_wave)
 
     def invertWave(self):
         if self.activeMdiChild:
-            self.activeMdiChild.invertWave()
+            self.activeMdiChild.applyFunction(wave_functions.invert_wave)
+
+    def centreWave(self):
+        if self.activeMdiChild:
+            self.activeMdiChild.applyFunction(wave_functions.centre_wave)
+
+    def normaliseWave(self):
+        if self.activeMdiChild:
+            self.activeMdiChild.applyFunction(wave_functions.normalise_wave)
+
+    def rectifyWave(self):
+        if self.activeMdiChild:
+            self.activeMdiChild.applyFunction(wave_functions.rectify_wave)
 
     def action_About__triggered(self):
         AboutDialog().exec_()

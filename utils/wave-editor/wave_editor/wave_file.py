@@ -13,6 +13,10 @@ wave_header = struct.Struct("BBH")
 wave_sample = struct.Struct("B")
 
 
+class WaveFileError(Exception):
+    pass
+
+
 class WaveTable(object):
     """
     Represents a wave table, by default this is fixed size list of byte values.
@@ -43,13 +47,13 @@ class WaveTable(object):
         # Check file id
         file_id = f.read(4)
         if file_id != WAVE_HEADER_ID:
-            raise Exception("File is missing wave ID.")
+            raise WaveFileError("File is missing wave ID.")
 
         # Read header and check version
         data = f.read(wave_header.size)
         version, checksum, length = wave_header.unpack(data)
         if version != WAVE_VERSION:
-            raise Exception("Unknown file version.")
+            raise WaveFileError("Unknown file version.")
 
         # Load/parse data
         data = f.read(length)
@@ -57,7 +61,7 @@ class WaveTable(object):
 
         # Confirm checksum
         if checksum != functools.reduce(operator.xor, wave):
-            raise Exception("Invalid checksum.")
+            raise WaveFileError("Invalid checksum.")
 
         return cls(wave)
 
@@ -74,6 +78,12 @@ class WaveTable(object):
         if not(0 <= value <= self.dynamic_range):
             raise ValueError("Value outside dynamic range.")
         self._table[idx] = value
+
+    def __len__(self):
+        return len(self._table)
+
+    def __iter__(self):
+        return iter(self._table)
 
     def clear_modified(self):
         self.modified = False
@@ -140,14 +150,6 @@ class WaveTable(object):
             self[idx + offset] = (self[idx + offset] + sample) >> 1
 
         return self
-
-    def mirror(self):
-        self.modified = True
-        self._table = wave_functions.mirror_wave(self._table)
-
-    def invert(self):
-        self.modified = True
-        self._table = wave_functions.invert_wave(self._table)
 
     def write(self, f):
         """
@@ -238,6 +240,6 @@ class ExportCFormatter(object):
 
         for r in range(0, self.wave_table.wave_length / 16):
             samples = self.wave_table[r * 16:(r + 1) * 16]
-            print('\t', ','.join("0x{:02X}".format(s) for s in samples), sep='', file=f)
+            print('\t', ','.join("0x{:02X}".format(s) for s in samples), ',', sep='', file=f)
 
         print("};", file=f)

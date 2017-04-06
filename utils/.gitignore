@@ -1,3 +1,7 @@
-*.pyc
+*.py[co]
 .idea
+
+# Outputs
 *.wave
+*.asm
+*.c

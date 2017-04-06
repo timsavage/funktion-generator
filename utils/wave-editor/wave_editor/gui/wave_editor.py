@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 from PySide import QtCore, QtGui
 
-from ..wave_file import WaveTable, ExportAsmFormatter, ExportCFormatter
+from ..wave_file import WaveTable, WaveFileError, ExportAsmFormatter, ExportCFormatter
 from .dialogs import AsmExportDialog
 from .widgets import WaveScene
 
@@ -22,6 +22,7 @@ class WaveDocumentEditor(QtGui.QGraphicsView):
         self.fileName = None
         self.waveTable = None
         self.scene = None
+        self.undoBuffer = []
 
     def closeEvent(self, event):
         if self.maybeSave():
@@ -49,12 +50,20 @@ class WaveDocumentEditor(QtGui.QGraphicsView):
             return False
 
         QtGui.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
-        self.waveTable = WaveTable.read(f)
-        self.setFileName(file_name)
-        self.scene = WaveScene(self.waveTable)
-        self.setScene(self.scene)
-        self.fileChanged()
-        QtGui.QApplication.restoreOverrideCursor()
+        try:
+            self.waveTable = WaveTable.read(f)
+            self.setFileName(file_name)
+            self.scene = WaveScene(self.waveTable)
+            self.setScene(self.scene)
+            self.fileChanged()
+        except WaveFileError as ex:
+            QtGui.QApplication.restoreOverrideCursor()
+            QtGui.QMessageBox.warning(self, "Wave Editor", "Invalid wave file: {}\n{}".format(
+                file_name, ex
+            ))
+            return False
+        finally:
+            QtGui.QApplication.restoreOverrideCursor()
 
         return True
 
@@ -111,21 +120,25 @@ class WaveDocumentEditor(QtGui.QGraphicsView):
         self.scene.render()
 
     def generateWave(self, function):
+        self.undoBuffer.append(list(self.waveTable))
         self.waveTable.insert(function())
         self.fileChanged()
-        # self.setTransform(QtGui.QTransform.fromScale(2, 2))
 
     def mergeWave(self, function):
+        self.undoBuffer.append(list(self.waveTable))
         self.waveTable.merge(function())
         self.fileChanged()
 
-    def mirrorWave(self):
-        self.waveTable.mirror()
+    def applyFunction(self, function):
+        self.undoBuffer.append(list(self.waveTable))
+        self.waveTable.insert(function(self.waveTable))
         self.fileChanged()
 
-    def invertWave(self):
-        self.waveTable.invert()
-        self.fileChanged()
+    def undo(self):
+        if self.undoBuffer:
+            wave = self.undoBuffer.pop()
+            self.waveTable.insert(wave)
+            self.fileChanged()
 
     def exportAsm(self):
         """

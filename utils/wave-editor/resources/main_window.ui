@@ -115,9 +115,20 @@
      <string>&amp;Tools</string>
     </property>
     <addaction name="actionInvert"/>
+    <addaction name="actionRectify"/>
     <addaction name="actionMirror"/>
+    <addaction name="actionCentre"/>
+    <addaction name="separator"/>
+    <addaction name="actionNormalise"/>
+   </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionUndo"/>
    </widget>
    <addaction name="menuFile"/>
+   <addaction name="menu_Edit"/>
    <addaction name="menuWaveForm"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
@@ -294,6 +305,38 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+%</string>
+   </property>
+  </action>
+  <action name="actionNormalise">
+   <property name="text">
+    <string>&amp;Normalise</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionRectify">
+   <property name="text">
+    <string>&amp;Rectify</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionCentre">
+   <property name="text">
+    <string>&amp;Centre</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+K</string>
    </property>
   </action>
  </widget>
