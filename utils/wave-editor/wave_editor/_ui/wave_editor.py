@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'resources/wave_editor.ui'
 #
-# Created: Tue Mar  7 22:14:09 2017
+# Created: Sat Apr  8 00:53:02 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!

@@ -14,17 +14,21 @@ class MainWindow(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        # File
         self.ui.actionNew.triggered.connect(self.newFile)
+        self.ui.actionNew2.triggered.connect(self.newFile)
         self.ui.actionOpen.triggered.connect(self.openFile)
+        self.ui.actionOpen2.triggered.connect(self.openFile)
         self.ui.actionSave.triggered.connect(self.save)
+        self.ui.actionSave2.triggered.connect(self.save)
         self.ui.actionSaveAs.triggered.connect(self.saveAs)
         self.ui.actionASMDataTable.triggered.connect(self.exportAsm)
         self.ui.actionCDatatable.triggered.connect(self.exportC)
         self.ui.actionClose.triggered.connect(self.ui.mdiArea.closeAllSubWindows)
         self.ui.actionQuit.triggered.connect(self.quit)
-
+        # Edit
         self.ui.actionUndo.triggered.connect(self.undo)
-
+        self.ui.actionUndo2.triggered.connect(self.undo)
         # Generate
         self.ui.actionZero.triggered.connect(self.applyZero)
         self.ui.actionSine.triggered.connect(self.applySine)
@@ -37,15 +41,20 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionMergeSquare.triggered.connect(self.applyMergeSquare)
         self.ui.actionMergeTriangle.triggered.connect(self.applyMergeTriangle)
         self.ui.actionMergeSawtooth.triggered.connect(self.applyMergeSawtooth)
-        self.ui.actionMergeReverseSawtooth.triggered.connect(self.applyMergeReverseSawtooth)
+        self.ui.actionMergeRSawtooth.triggered.connect(self.applyMergeReverseSawtooth)
         # Tools
         self.ui.actionInvert.triggered.connect(self.invertWave)
+        self.ui.actionInvert2.triggered.connect(self.invertWave)
         self.ui.actionMirror.triggered.connect(self.mirrorWave)
-        self.ui.actionCentre.triggered.connect(self.centreWave)
-        self.ui.actionNormalise.triggered.connect(self.normaliseWave)
+        self.ui.actionMirror2.triggered.connect(self.mirrorWave)
         self.ui.actionRectify.triggered.connect(self.rectifyWave)
-
-        self.ui.actionAbout.triggered.connect(self.action_About__triggered)
+        self.ui.actionRectify2.triggered.connect(self.rectifyWave)
+        self.ui.actionCentre.triggered.connect(self.centreWave)
+        self.ui.actionCentre2.triggered.connect(self.centreWave)
+        self.ui.actionNormalise.triggered.connect(self.normaliseWave)
+        self.ui.actionNormalise2.triggered.connect(self.normaliseWave)
+        # About
+        self.ui.actionAbout.triggered.connect(self.showAbout)
 
         self.newFile()
 
@@ -162,7 +171,7 @@ class MainWindow(QtGui.QMainWindow):
         if self.activeMdiChild:
             self.activeMdiChild.applyFunction(wave_functions.rectify_wave)
 
-    def action_About__triggered(self):
+    def showAbout(self):
         AboutDialog().exec_()
 
     @property

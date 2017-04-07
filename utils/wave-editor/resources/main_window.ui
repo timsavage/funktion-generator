@@ -104,7 +104,7 @@
      <addaction name="actionMergeSquare"/>
      <addaction name="actionMergeTriangle"/>
      <addaction name="actionMergeSawtooth"/>
-     <addaction name="actionMergeReverseSawtooth"/>
+     <addaction name="actionMergeRSawtooth"/>
     </widget>
     <addaction name="actionZero"/>
     <addaction name="menuGenerate"/>
@@ -127,13 +127,50 @@
     </property>
     <addaction name="actionUndo"/>
    </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="menu_Zoom">
+     <property name="title">
+      <string>&amp;Zoom</string>
+     </property>
+     <addaction name="action_Increase"/>
+     <addaction name="action100"/>
+     <addaction name="action_Decrease"/>
+    </widget>
+    <addaction name="menu_Zoom"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menu_Edit"/>
+   <addaction name="menu_View"/>
    <addaction name="menuWaveForm"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNew2"/>
+   <addaction name="actionOpen2"/>
+   <addaction name="actionSave2"/>
+   <addaction name="separator"/>
+   <addaction name="actionUndo2"/>
+   <addaction name="separator"/>
+   <addaction name="actionInvert2"/>
+   <addaction name="actionMirror2"/>
+   <addaction name="actionRectify2"/>
+   <addaction name="actionCentre2"/>
+   <addaction name="actionNormalise2"/>
+  </widget>
   <action name="actionOpen">
    <property name="text">
     <string>&amp;Open</string>
@@ -299,7 +336,7 @@
     <string>Ctrl+$</string>
    </property>
   </action>
-  <action name="actionMergeReverseSawtooth">
+  <action name="actionMergeRSawtooth">
    <property name="text">
     <string>Reverse Sawtooth</string>
    </property>
@@ -339,7 +376,131 @@
     <string>Ctrl+K</string>
    </property>
   </action>
+  <action name="action_Increase">
+   <property name="text">
+    <string>&amp;Increase</string>
+   </property>
+   <property name="shortcut">
+    <string>+</string>
+   </property>
+  </action>
+  <action name="action_Decrease">
+   <property name="text">
+    <string>&amp;Decrease</string>
+   </property>
+   <property name="shortcut">
+    <string>-</string>
+   </property>
+  </action>
+  <action name="action100">
+   <property name="text">
+    <string>100%</string>
+   </property>
+  </action>
+  <action name="actionInvert2">
+   <property name="icon">
+    <iconset resource="wave_editor.qrc">
+     <normaloff>:/toolbar/icons/invert.png</normaloff>:/toolbar/icons/invert.png</iconset>
+   </property>
+   <property name="text">
+    <string>Invert</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert</string>
+   </property>
+   <property name="statusTip">
+    <string>Invert the current waveform about the origin.</string>
+   </property>
+  </action>
+  <action name="actionRectify2">
+   <property name="icon">
+    <iconset resource="wave_editor.qrc">
+     <normaloff>:/toolbar/icons/rectify.png</normaloff>:/toolbar/icons/rectify.png</iconset>
+   </property>
+   <property name="text">
+    <string>Rectify</string>
+   </property>
+   <property name="statusTip">
+    <string>Rectify the current waveform.</string>
+   </property>
+  </action>
+  <action name="actionMirror2">
+   <property name="icon">
+    <iconset resource="wave_editor.qrc">
+     <normaloff>:/toolbar/icons/mirror.png</normaloff>:/toolbar/icons/mirror.png</iconset>
+   </property>
+   <property name="text">
+    <string>Mirror</string>
+   </property>
+   <property name="toolTip">
+    <string>Mirror</string>
+   </property>
+   <property name="statusTip">
+    <string>Mirror the current waveform about the mid point of the wave.</string>
+   </property>
+  </action>
+  <action name="actionCentre2">
+   <property name="icon">
+    <iconset resource="wave_editor.qrc">
+     <normaloff>:/toolbar/icons/centre.png</normaloff>:/toolbar/icons/centre.png</iconset>
+   </property>
+   <property name="text">
+    <string>Centre</string>
+   </property>
+   <property name="statusTip">
+    <string>Centre the current waveform about the origin.</string>
+   </property>
+  </action>
+  <action name="actionNormalise2">
+   <property name="icon">
+    <iconset resource="wave_editor.qrc">
+     <normaloff>:/toolbar/icons/normalise.png</normaloff>:/toolbar/icons/normalise.png</iconset>
+   </property>
+   <property name="text">
+    <string>Normalise</string>
+   </property>
+   <property name="toolTip">
+    <string>Normalise</string>
+   </property>
+   <property name="statusTip">
+    <string>Normalise the current waveform to fit the full dynamic range.</string>
+   </property>
+  </action>
+  <action name="actionUndo2">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="statusTip">
+    <string>Undo the last action on the current waveform.</string>
+   </property>
+  </action>
+  <action name="actionNew2">
+   <property name="text">
+    <string>New</string>
+   </property>
+   <property name="statusTip">
+    <string>Create a new waveform.</string>
+   </property>
+  </action>
+  <action name="actionOpen2">
+   <property name="text">
+    <string>Open</string>
+   </property>
+   <property name="statusTip">
+    <string>Open an exisiting waveform file.</string>
+   </property>
+  </action>
+  <action name="actionSave2">
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="statusTip">
+    <string>Save the current waveform.</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="wave_editor.qrc"/>
+ </resources>
  <connections/>
 </ui>
