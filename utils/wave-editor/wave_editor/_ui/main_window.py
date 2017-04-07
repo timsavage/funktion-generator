@@ -144,6 +144,7 @@ class Ui_MainWindow(object):
         self.actionNormalise2.setObjectName("actionNormalise2")
         self.actionUndo2 = QtGui.QAction(MainWindow)
         self.actionUndo2.setObjectName("actionUndo2")
+        self.actionUndo2.setIcon(QtGui.QIcon.fromTheme("edit-undo"))
         self.actionNew2 = QtGui.QAction(MainWindow)
         self.actionNew2.setObjectName("actionNew2")
         self.actionOpen2 = QtGui.QAction(MainWindow)

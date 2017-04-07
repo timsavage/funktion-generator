@@ -31,6 +31,9 @@ class WaveDocumentEditor(QtGui.QGraphicsView):
             event.ignore()
 
     def newFile(self):
+        """
+        Create a new file
+        """
         self.isUntitled = True
         WaveDocumentEditor.sequence_number += 1
         self.fileName = "wave{}.wave".format(self.sequence_number)
@@ -42,6 +45,13 @@ class WaveDocumentEditor(QtGui.QGraphicsView):
         return True
 
     def loadFile(self, file_name):
+        """
+        Load an existing wave file.
+        
+        :param file_name: The name of the file to load. 
+        :return: True if successful; else False
+         
+        """
         f = QtCore.QFile(file_name)
         if not f.open(QtCore.QFile.ReadOnly):
             QtGui.QMessageBox.warning(self, "Wave Editor", "Cannot read file: {}\n{}".format(
@@ -68,12 +78,24 @@ class WaveDocumentEditor(QtGui.QGraphicsView):
         return True
 
     def save(self):
+        """
+        Save the current file (will call save as if not previously saved)
+        
+        :return: True if successful; else False
+        
+        """
         if self.isUntitled:
             return self.saveAs()
         else:
             return self.saveFile(self.fileName)
 
     def saveAs(self):
+        """
+        Save the current wave to a file as a named selected by the user.
+        
+        :return: True if successful; else False
+         
+        """
         file_name, _ = QtGui.QFileDialog.getSaveFileName(self, "Save As...", self.fileName)
         if not file_name:
             return False
@@ -134,7 +156,13 @@ class WaveDocumentEditor(QtGui.QGraphicsView):
         self.waveTable.insert(function(self.waveTable))
         self.fileChanged()
 
+    def setZoom(self, level=1):
+        self.scale(level, level)
+
     def undo(self):
+        """
+        Undo the last action performed on the wave. 
+        """
         if self.undoBuffer:
             wave = self.undoBuffer.pop()
             self.waveTable.insert(wave)
