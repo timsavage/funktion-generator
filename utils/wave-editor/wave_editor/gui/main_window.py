@@ -17,10 +17,13 @@ class MainWindow(QtGui.QMainWindow):
         # File
         self.ui.actionNew.triggered.connect(self.newFile)
         self.ui.actionNew2.triggered.connect(self.newFile)
+        self.ui.actionNew2.setIcon(QtGui.QIcon.fromTheme('document-new'))
         self.ui.actionOpen.triggered.connect(self.openFile)
         self.ui.actionOpen2.triggered.connect(self.openFile)
+        self.ui.actionOpen2.setIcon(QtGui.QIcon.fromTheme('document-open'))
         self.ui.actionSave.triggered.connect(self.save)
         self.ui.actionSave2.triggered.connect(self.save)
+        self.ui.actionSave2.setIcon(QtGui.QIcon.fromTheme('document-save'))
         self.ui.actionSaveAs.triggered.connect(self.saveAs)
         self.ui.actionASMDataTable.triggered.connect(self.exportAsm)
         self.ui.actionCDatatable.triggered.connect(self.exportC)
@@ -29,6 +32,7 @@ class MainWindow(QtGui.QMainWindow):
         # Edit
         self.ui.actionUndo.triggered.connect(self.undo)
         self.ui.actionUndo2.triggered.connect(self.undo)
+        self.ui.actionUndo2.setIcon(QtGui.QIcon.fromTheme('edit-undo'))
         # Generate
         self.ui.actionZero.triggered.connect(self.applyZero)
         self.ui.actionSine.triggered.connect(self.applySine)
