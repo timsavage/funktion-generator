@@ -117,7 +117,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def zoomIn(self):
         if self.activeMdiChild:
-            self.activeMdiChild.setZoom(2)
+            self.activeMdiChild.setZoom(1.25)
 
     def zoom100(self):
         if self.activeMdiChild:
@@ -125,7 +125,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def zoomOut(self):
         if self.activeMdiChild:
-            self.activeMdiChild.setZoom(0.5)
+            self.activeMdiChild.setZoom(0.8)
 
     def applyZero(self):
         if self.activeMdiChild:
