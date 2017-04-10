@@ -9,8 +9,12 @@ from .wave_editor import WaveDocumentEditor
 
 
 class MainWindow(QtGui.QMainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, devices, parent=None):
         super(MainWindow, self).__init__(parent)
+
+        self.devices = devices
+        self.devices.serviceAdd.connect(self.addDevice)
+
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
@@ -73,6 +77,9 @@ class MainWindow(QtGui.QMainWindow):
             # self.writeSettings()
             event.accept()
 
+    def addDevice(self, name):
+        pass
+
     def newFile(self):
         child = WaveDocumentEditor()
         self.ui.mdiArea.addSubWindow(child)
@@ -116,15 +123,11 @@ class MainWindow(QtGui.QMainWindow):
 
     def zoomIn(self):
         if self.activeMdiChild:
-            self.activeMdiChild.setZoom(1.25)
-
-    def zoom100(self):
-        if self.activeMdiChild:
-            self.activeMdiChild.setZoom()
+            self.activeMdiChild.zoomIn()
 
     def zoomOut(self):
         if self.activeMdiChild:
-            self.activeMdiChild.setZoom(0.8)
+            self.activeMdiChild.zoomOut()
 
     def applyZero(self):
         if self.activeMdiChild:

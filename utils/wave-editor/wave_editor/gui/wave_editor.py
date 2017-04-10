@@ -12,6 +12,7 @@ class WaveDocumentEditor(QtGui.QGraphicsView):
     Individual wave editor documents.
     """
     sequence_number = 0
+    wheel_step = 120
 
     def __init__(self):
         super(WaveDocumentEditor, self).__init__()
@@ -29,6 +30,13 @@ class WaveDocumentEditor(QtGui.QGraphicsView):
             event.accept()
         else:
             event.ignore()
+
+    def wheelEvent(self, event):
+        delta = event.delta()
+        if delta > 0:
+            self.zoomIn()
+        elif delta < 0:
+            self.zoomOut()
 
     def newFile(self):
         """
@@ -156,8 +164,11 @@ class WaveDocumentEditor(QtGui.QGraphicsView):
         self.waveTable.insert(function(self.waveTable))
         self.fileChanged()
 
-    def setZoom(self, level=1):
-        self.scale(level, level)
+    def zoomIn(self):
+        self.scale(1.25, 1.25)
+
+    def zoomOut(self):
+        self.scale(0.8, 0.8)
 
     def undo(self):
         """

@@ -19,7 +19,7 @@ class Devices(QtCore.QObject):
     def __init__(self):
         super(Devices, self).__init__()
 
-        self.browser = ServiceBrowser(zeroconf, "function-gen._udp.local", self)
+        self.browser = ServiceBrowser(zeroconf, "_wave._udp.local.", self)
         self._devices = []
 
     def _populate(self):
@@ -31,6 +31,6 @@ class Devices(QtCore.QObject):
 
     def add_service(self, zeroconf, type_, name):
         info = zeroconf.get_service_info(type_, name)
-        logger.info("Service %s added, service info: %s", name, info)
+        print("Service %s added, service info: %s" % (name, info))
         self.serviceAdd.emit(name)
 
