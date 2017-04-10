@@ -121,29 +121,28 @@
     <addaction name="separator"/>
     <addaction name="actionNormalise"/>
    </widget>
-   <widget class="QMenu" name="menu_Edit">
+   <widget class="QMenu" name="menuEdit">
     <property name="title">
      <string>&amp;Edit</string>
     </property>
     <addaction name="actionUndo"/>
    </widget>
-   <widget class="QMenu" name="menu_View">
+   <widget class="QMenu" name="menuView">
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="menu_Zoom">
+    <widget class="QMenu" name="menuZoom">
      <property name="title">
       <string>&amp;Zoom</string>
      </property>
-     <addaction name="action_Increase"/>
-     <addaction name="action100"/>
-     <addaction name="action_Decrease"/>
+     <addaction name="actionIncrease"/>
+     <addaction name="actionDecrease"/>
     </widget>
-    <addaction name="menu_Zoom"/>
+    <addaction name="menuZoom"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menu_Edit"/>
-   <addaction name="menu_View"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuView"/>
    <addaction name="menuWaveForm"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
@@ -170,6 +169,28 @@
    <addaction name="actionRectify2"/>
    <addaction name="actionCentre2"/>
    <addaction name="actionNormalise2"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget">
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QComboBox" name="comboBox"/>
+     </item>
+     <item>
+      <widget class="QFrame" name="frame">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <action name="actionOpen">
    <property name="text">
@@ -229,7 +250,7 @@
     <string>Sine</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+1</string>
+    <string>1</string>
    </property>
   </action>
   <action name="actionSquare">
@@ -237,7 +258,7 @@
     <string>Square</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+2</string>
+    <string>2</string>
    </property>
   </action>
   <action name="actionTriangle">
@@ -245,7 +266,7 @@
     <string>Triangle</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+3</string>
+    <string>3</string>
    </property>
   </action>
   <action name="actionSawtooth">
@@ -253,7 +274,7 @@
     <string>Sawtooth</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+4</string>
+    <string>4</string>
    </property>
   </action>
   <action name="actionReverseSawtooth">
@@ -261,7 +282,7 @@
     <string>Reverse Sawtooth</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+5</string>
+    <string>5</string>
    </property>
   </action>
   <action name="actionZero">
@@ -269,7 +290,7 @@
     <string>&amp;Zero</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+0</string>
+    <string>0</string>
    </property>
   </action>
   <action name="actionInvert">
@@ -309,7 +330,7 @@
     <string>Sine</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+!</string>
+    <string>Alt+1</string>
    </property>
   </action>
   <action name="actionMergeSquare">
@@ -317,7 +338,7 @@
     <string>Square</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+@</string>
+    <string>Alt+2</string>
    </property>
   </action>
   <action name="actionMergeTriangle">
@@ -325,7 +346,7 @@
     <string>Triangle</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+#</string>
+    <string>Alt+3</string>
    </property>
   </action>
   <action name="actionMergeSawtooth">
@@ -333,7 +354,7 @@
     <string>Sawtooth</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+$</string>
+    <string>Alt+4</string>
    </property>
   </action>
   <action name="actionMergeRSawtooth">
@@ -341,7 +362,7 @@
     <string>Reverse Sawtooth</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+%</string>
+    <string>Alt+5</string>
    </property>
   </action>
   <action name="actionNormalise">
@@ -376,25 +397,20 @@
     <string>Ctrl+K</string>
    </property>
   </action>
-  <action name="action_Increase">
+  <action name="actionIncrease">
    <property name="text">
     <string>&amp;Increase</string>
    </property>
    <property name="shortcut">
-    <string>+</string>
+    <string>=</string>
    </property>
   </action>
-  <action name="action_Decrease">
+  <action name="actionDecrease">
    <property name="text">
     <string>&amp;Decrease</string>
    </property>
    <property name="shortcut">
     <string>-</string>
-   </property>
-  </action>
-  <action name="action100">
-   <property name="text">
-    <string>100%</string>
    </property>
   </action>
   <action name="actionInvert2">

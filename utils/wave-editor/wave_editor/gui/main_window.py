@@ -34,9 +34,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionUndo2.triggered.connect(self.undo)
         self.ui.actionUndo2.setIcon(QtGui.QIcon.fromTheme('edit-undo'))
         # View
-        self.ui.action_Increase.triggered.connect(self.zoomIn)
-        self.ui.action100.triggered.connect(self.zoom100)
-        self.ui.action_Decrease.triggered.connect(self.zoomOut)
+        self.ui.actionIncrease.triggered.connect(self.zoomIn)
+        self.ui.actionDecrease.triggered.connect(self.zoomOut)
         # Generate
         self.ui.actionZero.triggered.connect(self.applyZero)
         self.ui.actionSine.triggered.connect(self.applySine)
@@ -117,7 +116,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def zoomIn(self):
         if self.activeMdiChild:
-            self.activeMdiChild.setZoom(2)
+            self.activeMdiChild.setZoom(1.25)
 
     def zoom100(self):
         if self.activeMdiChild:
@@ -125,7 +124,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def zoomOut(self):
         if self.activeMdiChild:
-            self.activeMdiChild.setZoom(0.5)
+            self.activeMdiChild.setZoom(0.8)
 
     def applyZero(self):
         if self.activeMdiChild:
