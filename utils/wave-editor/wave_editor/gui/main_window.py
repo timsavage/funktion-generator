@@ -34,9 +34,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionUndo2.triggered.connect(self.undo)
         self.ui.actionUndo2.setIcon(QtGui.QIcon.fromTheme('edit-undo'))
         # View
-        self.ui.action_Increase.triggered.connect(self.zoomIn)
-        self.ui.action100.triggered.connect(self.zoom100)
-        self.ui.action_Decrease.triggered.connect(self.zoomOut)
+        self.ui.actionIncrease.triggered.connect(self.zoomIn)
+        self.ui.actionDecrease.triggered.connect(self.zoomOut)
         # Generate
         self.ui.actionZero.triggered.connect(self.applyZero)
         self.ui.actionSine.triggered.connect(self.applySine)
