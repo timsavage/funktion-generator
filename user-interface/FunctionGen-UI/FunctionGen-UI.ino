@@ -12,7 +12,8 @@
 #define __TFT_DC  D8   //(D1)
 
 
-
+const char* ssid = "Penguins!";
+const char* password = "M0nk3ysN0tD0nk3ys";
 const char* mdnsName = "FunktionGen";
 
 
