@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'resources/main_window.ui'
 #
-# Created: Mon Apr 10 18:51:18 2017
+# Created: Tue Apr 11 10:56:51 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -59,6 +59,22 @@ class Ui_MainWindow(object):
         self.toolBar = QtGui.QToolBar(MainWindow)
         self.toolBar.setObjectName("toolBar")
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
+        self.dockWidget = QtGui.QDockWidget(MainWindow)
+        self.dockWidget.setObjectName("dockWidget")
+        self.dockWidgetContents = QtGui.QWidget()
+        self.dockWidgetContents.setObjectName("dockWidgetContents")
+        self.verticalLayout = QtGui.QVBoxLayout(self.dockWidgetContents)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.comboBox = QtGui.QComboBox(self.dockWidgetContents)
+        self.comboBox.setObjectName("comboBox")
+        self.verticalLayout.addWidget(self.comboBox)
+        self.frame = QtGui.QFrame(self.dockWidgetContents)
+        self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.verticalLayout.addWidget(self.frame)
+        self.dockWidget.setWidget(self.dockWidgetContents)
+        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.dockWidget)
         self.actionOpen = QtGui.QAction(MainWindow)
         self.actionOpen.setObjectName("actionOpen")
         self.actionQuit = QtGui.QAction(MainWindow)

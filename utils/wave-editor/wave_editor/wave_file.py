@@ -19,10 +19,13 @@ class WaveFileError(Exception):
 
 class WaveTable(object):
     """
-    Represents a wave table, by default this is fixed size list of byte values.
-
-    The length of the list is the wave length while the byte data type
-    represents the Dynamic range which can be represented.
+    Represents a wave table, by default this is fixed size list of signed byte 
+    values. The length of the table is the wave length while the byte data type
+    represents the Dynamic range which can be represented. 
+    
+    For writing to a file samples are encoded around a 0 or origin value of 
+    0x80 allowing for a maximum sample value of +127 (encoded as 0xFF) and a 
+    minimum of -128 (encoded as 0x00).  
 
     The on disk representation::
 
@@ -39,8 +42,7 @@ class WaveTable(object):
     L = Length of table
 
     """
-    wave_length = wave_functions.WAVE_LENGTH
-    dynamic_range = wave_functions.DYNAMIC_RANGE
+    FILE_ORIGIN = 0x80
 
     @classmethod
     def read(cls, f):
@@ -66,7 +68,7 @@ class WaveTable(object):
         return cls(wave)
 
     def __init__(self, wave=None):
-        assert wave is None or len(wave) == self.wave_length
+        assert wave is None or len(wave) == wave_functions.WAVE_LENGTH
 
         self.modified = False
         self._table = wave or wave_functions.zero_wave()
@@ -75,7 +77,7 @@ class WaveTable(object):
         return self._table[idx]
 
     def __setitem__(self, idx, value):
-        if not(0 <= value <= self.dynamic_range):
+        if not (-0x80 <= value <= 0x7F):
             raise ValueError("Value outside dynamic range.")
         self._table[idx] = value
 
@@ -110,7 +112,7 @@ class WaveTable(object):
         wave = list(wave)
 
         # Check size of wave data
-        if len(wave) + offset > self.wave_length:
+        if len(wave) + offset > wave_functions.WAVE_LENGTH:
             raise IndexError("Overflow of wave data.")
 
         self.modified = True
@@ -140,7 +142,7 @@ class WaveTable(object):
         wave = list(wave)
 
         # Check size of wave data
-        if len(wave) + offset > self.wave_length:
+        if len(wave) + offset > wave_functions.WAVE_LENGTH:
             raise IndexError("Overflow of wave data.")
 
         self.modified = True

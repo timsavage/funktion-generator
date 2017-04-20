@@ -1,11 +1,13 @@
 from __future__ import division, print_function
 
 import math
+import os
 
-DYNAMIC_RANGE = 0xFF
+# Constants
+DYNAMIC_RANGE = 0x100
 ORIGIN = DYNAMIC_RANGE >> 1
-WAVE_LENGTH = 256
-
+MAX_OFFSET = 0x7F
+WAVE_LENGTH = 0x100
 TAU = math.pi * 2  # The useful circle constant!
 
 
@@ -13,15 +15,14 @@ def zero_wave():
     """
     A flat line about the origin.
     """
-    return [ORIGIN for _ in range(WAVE_LENGTH)]
+    return [0] * WAVE_LENGTH
 
 
 def sine_wave():
     """
     Generate a sine wave.
     """
-    f_dynamic = float(DYNAMIC_RANGE)
-    return [ORIGIN + int(math.sin((x / f_dynamic) * TAU) * ORIGIN + 0.5) for x in range(WAVE_LENGTH)]
+    return [int(math.sin((x / WAVE_LENGTH) * TAU) * MAX_OFFSET + 0.5) for x in range(WAVE_LENGTH)]
 
 
 def square_wave():
@@ -29,9 +30,7 @@ def square_wave():
     Generate a square wave.
     """
     half_wave = WAVE_LENGTH >> 1
-    high = DYNAMIC_RANGE
-    low = 0
-    return [high if x < half_wave else low for x in range(WAVE_LENGTH)]
+    return [MAX_OFFSET if x < half_wave else -MAX_OFFSET for x in range(WAVE_LENGTH)]
 
 
 def triangle_wave():
@@ -67,6 +66,13 @@ def reverse_sawtooth_wave():
     return [(ORIGIN - x) % DYNAMIC_RANGE for x in range(WAVE_LENGTH)]
 
 
+def noise():
+    """
+    Generate noise
+    """
+    return [ord(x) - MAX_OFFSET for x in os.urandom(WAVE_LENGTH)]
+
+
 def invert_wave(wave):
     """
     Invert the wave or mirror about the origin.
@@ -85,7 +91,7 @@ def rectify_wave(wave):
     """
     Rectify the wave so the entire waveform is able the origin
     """
-    return [x if x >= ORIGIN else (DYNAMIC_RANGE - x) for x in wave]
+    return [math.fabs(x) for x in wave]
 
 
 def normalise_wave(wave):
@@ -93,15 +99,16 @@ def normalise_wave(wave):
     Scale wave to utilise the full dynamic range
     """
     rectified = rectify_wave(wave)
-    max_offset = max(rectified) - ORIGIN
-    scale = ORIGIN / (1.0 * max_offset)
-    return [ORIGIN + int((x - ORIGIN) * scale) for x in wave]
+    max_offset = max(rectified)
+    scale = MAX_OFFSET / (1.0 * max_offset)
+    return [int(x * scale) for x in wave]
 
  
 def centre_wave(wave):
     """
     Center a wave about the origin
     """
+    
     above_origin = [x - ORIGIN for x in wave if x >= ORIGIN]
     max_range = max(above_origin) if above_origin else 0
     below_origin = [ORIGIN - x for x in wave if x < ORIGIN]
