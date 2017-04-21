@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division
 
+from itertools import chain
 from PySide import QtGui
 
 from .. import wave_functions
@@ -61,8 +62,9 @@ class WaveScene(QtGui.QGraphicsScene):
         self.addPath(self.originPath, self.originPen)
 
         x1, y1 = None, None
-        for x2, y2 in enumerate(self._table):
+        for x2, y2 in enumerate(chain(self._table, self._table, self._table)):
             y2 = -y2
+            x2 -= wave_functions.WAVE_LENGTH
             # Translate into a center position
             if x1 is not None:
                 self.addLine(x1, y1, x2, y2)

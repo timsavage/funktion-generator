@@ -70,7 +70,7 @@ def noise():
     """
     Generate noise
     """
-    return [ord(x) - MAX_OFFSET for x in os.urandom(WAVE_LENGTH)]
+    return [ord(x) - 0x80 for x in os.urandom(WAVE_LENGTH)]
 
 
 def invert_wave(wave):
