@@ -59,19 +59,20 @@ class WaveTable(object):
 
         # Load/parse data
         data = f.read(length)
-        wave = [wave_sample.unpack_from(data, x)[0] for x in range(length)]
+        wave = [wave_sample.unpack_from(data, x)[0]for x in range(length)]
 
         # Confirm checksum
         if checksum != functools.reduce(operator.xor, wave):
             raise WaveFileError("Invalid checksum.")
 
-        return cls(wave)
+        return cls(w - wave_functions.ORIGIN for w in wave)
 
     def __init__(self, wave=None):
+        wave = list(wave or wave_functions.zero_wave())
         assert wave is None or len(wave) == wave_functions.WAVE_LENGTH
 
         self.modified = False
-        self._table = wave or wave_functions.zero_wave()
+        self._table = wave
 
     def __getitem__(self, idx):
         return self._table[idx]
@@ -169,7 +170,7 @@ class WaveTable(object):
         # Write samples
         sample = struct.Struct("B")
         for s in self._table:
-            f.write(sample.pack(s))
+            f.write(sample.pack(s + 0x80))
 
 
 class ExportAsmFormatter(object):

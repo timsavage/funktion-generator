@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'resources/main_window.ui'
 #
-# Created: Tue Apr 11 10:56:51 2017
+# Created: Fri Apr 21 18:57:45 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -164,6 +164,10 @@ class Ui_MainWindow(object):
         self.actionOpen2.setObjectName("actionOpen2")
         self.actionSave2 = QtGui.QAction(MainWindow)
         self.actionSave2.setObjectName("actionSave2")
+        self.actionNoise = QtGui.QAction(MainWindow)
+        self.actionNoise.setObjectName("actionNoise")
+        self.actionMergeNoise = QtGui.QAction(MainWindow)
+        self.actionMergeNoise.setObjectName("actionMergeNoise")
         self.menuExport.addAction(self.actionASMDataTable)
         self.menuExport.addAction(self.actionCDatatable)
         self.menuFile.addAction(self.actionNew)
@@ -182,11 +186,13 @@ class Ui_MainWindow(object):
         self.menuGenerate.addAction(self.actionTriangle)
         self.menuGenerate.addAction(self.actionSawtooth)
         self.menuGenerate.addAction(self.actionReverseSawtooth)
+        self.menuGenerate.addAction(self.actionNoise)
         self.menuMergeWith.addAction(self.actionMergeSine)
         self.menuMergeWith.addAction(self.actionMergeSquare)
         self.menuMergeWith.addAction(self.actionMergeTriangle)
         self.menuMergeWith.addAction(self.actionMergeSawtooth)
         self.menuMergeWith.addAction(self.actionMergeRSawtooth)
+        self.menuMergeWith.addAction(self.actionMergeNoise)
         self.menuWaveForm.addAction(self.actionZero)
         self.menuWaveForm.addAction(self.menuGenerate.menuAction())
         self.menuWaveForm.addAction(self.menuMergeWith.menuAction())
@@ -310,5 +316,9 @@ class Ui_MainWindow(object):
         self.actionOpen2.setStatusTip(QtGui.QApplication.translate("MainWindow", "Open an exisiting waveform file.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave2.setText(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave2.setStatusTip(QtGui.QApplication.translate("MainWindow", "Save the current waveform.", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionNoise.setText(QtGui.QApplication.translate("MainWindow", "Noise", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionNoise.setShortcut(QtGui.QApplication.translate("MainWindow", "6", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionMergeNoise.setText(QtGui.QApplication.translate("MainWindow", "Noise", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionMergeNoise.setShortcut(QtGui.QApplication.translate("MainWindow", "Alt+6", None, QtGui.QApplication.UnicodeUTF8))
 
 import wave_editor_rc

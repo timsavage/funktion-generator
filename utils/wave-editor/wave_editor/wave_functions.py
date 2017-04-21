@@ -43,11 +43,11 @@ def triangle_wave():
 
     def wave_func(x):
         if 0 <= x < quarter_wave:
-            return ORIGIN + x * 2
+            return x << 1
         elif quarter_wave <= x < three_quarter_wave:
-            return DYNAMIC_RANGE - (x - quarter_wave) * 2
+            return (MAX_OFFSET - x) << 1
         else:
-            return (x - three_quarter_wave) * 2
+            return -0x80 + ((x - three_quarter_wave) << 1)
 
     return [wave_func(x) for x in range(WAVE_LENGTH)]
 
@@ -56,14 +56,14 @@ def sawtooth_wave():
     """
     Generate a sawtooth wave.
     """
-    return [(ORIGIN + x) % DYNAMIC_RANGE for x in range(WAVE_LENGTH)]
+    return [x - 0x80 for x in range(WAVE_LENGTH)]
 
 
 def reverse_sawtooth_wave():
     """
     Generate a reverse sawtooth wave.
     """
-    return [(ORIGIN - x) % DYNAMIC_RANGE for x in range(WAVE_LENGTH)]
+    return [0x7F - x for x in range(WAVE_LENGTH)]
 
 
 def noise():
@@ -108,7 +108,6 @@ def centre_wave(wave):
     """
     Center a wave about the origin
     """
-    
     above_origin = [x - ORIGIN for x in wave if x >= ORIGIN]
     max_range = max(above_origin) if above_origin else 0
     below_origin = [ORIGIN - x for x in wave if x < ORIGIN]
