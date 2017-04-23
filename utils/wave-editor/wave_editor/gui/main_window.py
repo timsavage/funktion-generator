@@ -47,12 +47,14 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.actionTriangle.triggered.connect(self.applyTriangle)
         self.ui.actionSawtooth.triggered.connect(self.applySawtooth)
         self.ui.actionReverseSawtooth.triggered.connect(self.applyReverseSawtooth)
+        self.ui.actionNoise.triggered.connect(self.applyNoise)
         # Merge
         self.ui.actionMergeSine.triggered.connect(self.applyMergeSine)
         self.ui.actionMergeSquare.triggered.connect(self.applyMergeSquare)
         self.ui.actionMergeTriangle.triggered.connect(self.applyMergeTriangle)
         self.ui.actionMergeSawtooth.triggered.connect(self.applyMergeSawtooth)
         self.ui.actionMergeRSawtooth.triggered.connect(self.applyMergeReverseSawtooth)
+        self.ui.actionMergeNoise.triggered.connect(self.applyMergeNoise)
         # Tools
         self.ui.actionInvert.triggered.connect(self.invertWave)
         self.ui.actionInvert2.triggered.connect(self.invertWave)
@@ -153,6 +155,10 @@ class MainWindow(QtGui.QMainWindow):
         if self.activeMdiChild:
             self.activeMdiChild.generateWave(wave_functions.reverse_sawtooth_wave)
 
+    def applyNoise(self):
+        if self.activeMdiChild:
+            self.activeMdiChild.generateWave(wave_functions.noise)
+
     def applyMergeSine(self):
         if self.activeMdiChild:
             self.activeMdiChild.mergeWave(wave_functions.sine_wave)
@@ -172,6 +178,10 @@ class MainWindow(QtGui.QMainWindow):
     def applyMergeReverseSawtooth(self):
         if self.activeMdiChild:
             self.activeMdiChild.mergeWave(wave_functions.reverse_sawtooth_wave)
+
+    def applyMergeNoise(self):
+        if self.activeMdiChild:
+            self.activeMdiChild.mergeWave(wave_functions.noise)
 
     def mirrorWave(self):
         if self.activeMdiChild:

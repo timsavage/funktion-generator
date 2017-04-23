@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'resources/main_window.ui'
 #
-# Created: Mon Apr 10 18:51:18 2017
+# Created: Fri Apr 21 18:57:45 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -59,6 +59,22 @@ class Ui_MainWindow(object):
         self.toolBar = QtGui.QToolBar(MainWindow)
         self.toolBar.setObjectName("toolBar")
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
+        self.dockWidget = QtGui.QDockWidget(MainWindow)
+        self.dockWidget.setObjectName("dockWidget")
+        self.dockWidgetContents = QtGui.QWidget()
+        self.dockWidgetContents.setObjectName("dockWidgetContents")
+        self.verticalLayout = QtGui.QVBoxLayout(self.dockWidgetContents)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.comboBox = QtGui.QComboBox(self.dockWidgetContents)
+        self.comboBox.setObjectName("comboBox")
+        self.verticalLayout.addWidget(self.comboBox)
+        self.frame = QtGui.QFrame(self.dockWidgetContents)
+        self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.verticalLayout.addWidget(self.frame)
+        self.dockWidget.setWidget(self.dockWidgetContents)
+        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(2), self.dockWidget)
         self.actionOpen = QtGui.QAction(MainWindow)
         self.actionOpen.setObjectName("actionOpen")
         self.actionQuit = QtGui.QAction(MainWindow)
@@ -148,6 +164,10 @@ class Ui_MainWindow(object):
         self.actionOpen2.setObjectName("actionOpen2")
         self.actionSave2 = QtGui.QAction(MainWindow)
         self.actionSave2.setObjectName("actionSave2")
+        self.actionNoise = QtGui.QAction(MainWindow)
+        self.actionNoise.setObjectName("actionNoise")
+        self.actionMergeNoise = QtGui.QAction(MainWindow)
+        self.actionMergeNoise.setObjectName("actionMergeNoise")
         self.menuExport.addAction(self.actionASMDataTable)
         self.menuExport.addAction(self.actionCDatatable)
         self.menuFile.addAction(self.actionNew)
@@ -166,11 +186,13 @@ class Ui_MainWindow(object):
         self.menuGenerate.addAction(self.actionTriangle)
         self.menuGenerate.addAction(self.actionSawtooth)
         self.menuGenerate.addAction(self.actionReverseSawtooth)
+        self.menuGenerate.addAction(self.actionNoise)
         self.menuMergeWith.addAction(self.actionMergeSine)
         self.menuMergeWith.addAction(self.actionMergeSquare)
         self.menuMergeWith.addAction(self.actionMergeTriangle)
         self.menuMergeWith.addAction(self.actionMergeSawtooth)
         self.menuMergeWith.addAction(self.actionMergeRSawtooth)
+        self.menuMergeWith.addAction(self.actionMergeNoise)
         self.menuWaveForm.addAction(self.actionZero)
         self.menuWaveForm.addAction(self.menuGenerate.menuAction())
         self.menuWaveForm.addAction(self.menuMergeWith.menuAction())
@@ -294,5 +316,9 @@ class Ui_MainWindow(object):
         self.actionOpen2.setStatusTip(QtGui.QApplication.translate("MainWindow", "Open an exisiting waveform file.", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave2.setText(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave2.setStatusTip(QtGui.QApplication.translate("MainWindow", "Save the current waveform.", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionNoise.setText(QtGui.QApplication.translate("MainWindow", "Noise", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionNoise.setShortcut(QtGui.QApplication.translate("MainWindow", "6", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionMergeNoise.setText(QtGui.QApplication.translate("MainWindow", "Noise", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionMergeNoise.setShortcut(QtGui.QApplication.translate("MainWindow", "Alt+6", None, QtGui.QApplication.UnicodeUTF8))
 
 import wave_editor_rc

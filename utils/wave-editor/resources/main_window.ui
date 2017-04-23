@@ -95,6 +95,7 @@
      <addaction name="actionTriangle"/>
      <addaction name="actionSawtooth"/>
      <addaction name="actionReverseSawtooth"/>
+     <addaction name="actionNoise"/>
     </widget>
     <widget class="QMenu" name="menuMergeWith">
      <property name="title">
@@ -105,6 +106,7 @@
      <addaction name="actionMergeTriangle"/>
      <addaction name="actionMergeSawtooth"/>
      <addaction name="actionMergeRSawtooth"/>
+     <addaction name="actionMergeNoise"/>
     </widget>
     <addaction name="actionZero"/>
     <addaction name="menuGenerate"/>
@@ -512,6 +514,22 @@
    </property>
    <property name="statusTip">
     <string>Save the current waveform.</string>
+   </property>
+  </action>
+  <action name="actionNoise">
+   <property name="text">
+    <string>Noise</string>
+   </property>
+   <property name="shortcut">
+    <string>6</string>
+   </property>
+  </action>
+  <action name="actionMergeNoise">
+   <property name="text">
+    <string>Noise</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+6</string>
    </property>
   </action>
  </widget>

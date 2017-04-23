@@ -19,10 +19,13 @@ class WaveFileError(Exception):
 
 class WaveTable(object):
     """
-    Represents a wave table, by default this is fixed size list of byte values.
-
-    The length of the list is the wave length while the byte data type
-    represents the Dynamic range which can be represented.
+    Represents a wave table, by default this is fixed size list of signed byte 
+    values. The length of the table is the wave length while the byte data type
+    represents the Dynamic range which can be represented. 
+    
+    For writing to a file samples are encoded around a 0 or origin value of 
+    0x80 allowing for a maximum sample value of +127 (encoded as 0xFF) and a 
+    minimum of -128 (encoded as 0x00).  
 
     The on disk representation::
 
@@ -39,8 +42,7 @@ class WaveTable(object):
     L = Length of table
 
     """
-    wave_length = wave_functions.WAVE_LENGTH
-    dynamic_range = wave_functions.DYNAMIC_RANGE
+    FILE_ORIGIN = 0x80
 
     @classmethod
     def read(cls, f):
@@ -57,25 +59,26 @@ class WaveTable(object):
 
         # Load/parse data
         data = f.read(length)
-        wave = [wave_sample.unpack_from(data, x)[0] for x in range(length)]
+        wave = [wave_sample.unpack_from(data, x)[0]for x in range(length)]
 
         # Confirm checksum
         if checksum != functools.reduce(operator.xor, wave):
             raise WaveFileError("Invalid checksum.")
 
-        return cls(wave)
+        return cls(w - wave_functions.ORIGIN for w in wave)
 
     def __init__(self, wave=None):
-        assert wave is None or len(wave) == self.wave_length
+        wave = list(wave or wave_functions.zero_wave())
+        assert wave is None or len(wave) == wave_functions.WAVE_LENGTH
 
         self.modified = False
-        self._table = wave or wave_functions.zero_wave()
+        self._table = wave
 
     def __getitem__(self, idx):
         return self._table[idx]
 
     def __setitem__(self, idx, value):
-        if not(0 <= value <= self.dynamic_range):
+        if not (-0x80 <= value <= 0x7F):
             raise ValueError("Value outside dynamic range.")
         self._table[idx] = value
 
@@ -110,7 +113,7 @@ class WaveTable(object):
         wave = list(wave)
 
         # Check size of wave data
-        if len(wave) + offset > self.wave_length:
+        if len(wave) + offset > wave_functions.WAVE_LENGTH:
             raise IndexError("Overflow of wave data.")
 
         self.modified = True
@@ -140,7 +143,7 @@ class WaveTable(object):
         wave = list(wave)
 
         # Check size of wave data
-        if len(wave) + offset > self.wave_length:
+        if len(wave) + offset > wave_functions.WAVE_LENGTH:
             raise IndexError("Overflow of wave data.")
 
         self.modified = True
@@ -167,7 +170,7 @@ class WaveTable(object):
         # Write samples
         sample = struct.Struct("B")
         for s in self._table:
-            f.write(sample.pack(s))
+            f.write(sample.pack(s + 0x80))
 
 
 class ExportAsmFormatter(object):
@@ -208,9 +211,9 @@ class ExportAsmFormatter(object):
         else:
             prefix = self.AVRASM2_ROW_PREFIX
 
-        for r in range(0, self.wave_table.wave_length / 16):
+        for r in range(0, wave_functions.WAVE_LENGTH / 16):
             samples = self.wave_table[r * 16:(r + 1) * 16]
-            print(prefix, ','.join("0x{:02X}".format(s) for s in samples), sep='', file=f)
+            print(prefix, ','.join("0x{:02X}".format(wave_functions.ORIGIN + s) for s in samples), sep='', file=f)
 
 
 class ExportCFormatter(object):
@@ -238,8 +241,8 @@ class ExportCFormatter(object):
             file=f
         )
 
-        for r in range(0, self.wave_table.wave_length / 16):
+        for r in range(0, wave_functions.WAVE_LENGTH / 16):
             samples = self.wave_table[r * 16:(r + 1) * 16]
-            print('\t', ','.join("0x{:02X}".format(s) for s in samples), ',', sep='', file=f)
+            print('\t', ','.join("0x{:02X}".format(wave_functions.ORIGIN + s) for s in samples), ',', sep='', file=f)
 
         print("};", file=f)

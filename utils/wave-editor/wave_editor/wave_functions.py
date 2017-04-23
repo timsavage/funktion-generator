@@ -1,11 +1,13 @@
 from __future__ import division, print_function
 
 import math
+import os
 
-DYNAMIC_RANGE = 0xFF
+# Constants
+DYNAMIC_RANGE = 0x100
 ORIGIN = DYNAMIC_RANGE >> 1
-WAVE_LENGTH = 256
-
+MAX_OFFSET = 0x7F
+WAVE_LENGTH = 0x100
 TAU = math.pi * 2  # The useful circle constant!
 
 
@@ -13,15 +15,14 @@ def zero_wave():
     """
     A flat line about the origin.
     """
-    return [ORIGIN for _ in range(WAVE_LENGTH)]
+    return [0] * WAVE_LENGTH
 
 
 def sine_wave():
     """
     Generate a sine wave.
     """
-    f_dynamic = float(DYNAMIC_RANGE)
-    return [ORIGIN + int(math.sin((x / f_dynamic) * TAU) * ORIGIN + 0.5) for x in range(WAVE_LENGTH)]
+    return [int(math.sin((x / WAVE_LENGTH) * TAU) * MAX_OFFSET + 0.5) for x in range(WAVE_LENGTH)]
 
 
 def square_wave():
@@ -29,9 +30,7 @@ def square_wave():
     Generate a square wave.
     """
     half_wave = WAVE_LENGTH >> 1
-    high = DYNAMIC_RANGE
-    low = 0
-    return [high if x < half_wave else low for x in range(WAVE_LENGTH)]
+    return [MAX_OFFSET if x < half_wave else -MAX_OFFSET for x in range(WAVE_LENGTH)]
 
 
 def triangle_wave():
@@ -44,11 +43,11 @@ def triangle_wave():
 
     def wave_func(x):
         if 0 <= x < quarter_wave:
-            return ORIGIN + x * 2
+            return int(x * (MAX_OFFSET / quarter_wave) + 0.5)
         elif quarter_wave <= x < three_quarter_wave:
-            return DYNAMIC_RANGE - (x - quarter_wave) * 2
+            return int(MAX_OFFSET + (x - quarter_wave) * -(MAX_OFFSET / quarter_wave) + 0.5)
         else:
-            return (x - three_quarter_wave) * 2
+            return int(-MAX_OFFSET + (x - three_quarter_wave) * (MAX_OFFSET / quarter_wave) + 0.5)
 
     return [wave_func(x) for x in range(WAVE_LENGTH)]
 
@@ -57,14 +56,21 @@ def sawtooth_wave():
     """
     Generate a sawtooth wave.
     """
-    return [(ORIGIN + x) % DYNAMIC_RANGE for x in range(WAVE_LENGTH)]
+    return [x - 0x80 for x in range(WAVE_LENGTH)]
 
 
 def reverse_sawtooth_wave():
     """
     Generate a reverse sawtooth wave.
     """
-    return [(ORIGIN - x) % DYNAMIC_RANGE for x in range(WAVE_LENGTH)]
+    return [0x7F - x for x in range(WAVE_LENGTH)]
+
+
+def noise():
+    """
+    Generate noise
+    """
+    return [ord(x) - 0x80 for x in os.urandom(WAVE_LENGTH)]
 
 
 def invert_wave(wave):
@@ -85,7 +91,7 @@ def rectify_wave(wave):
     """
     Rectify the wave so the entire waveform is able the origin
     """
-    return [x if x >= ORIGIN else (DYNAMIC_RANGE - x) for x in wave]
+    return [math.fabs(x) for x in wave]
 
 
 def normalise_wave(wave):
@@ -93,9 +99,9 @@ def normalise_wave(wave):
     Scale wave to utilise the full dynamic range
     """
     rectified = rectify_wave(wave)
-    max_offset = max(rectified) - ORIGIN
-    scale = ORIGIN / (1.0 * max_offset)
-    return [ORIGIN + int((x - ORIGIN) * scale) for x in wave]
+    max_offset = max(rectified)
+    scale = MAX_OFFSET / (1.0 * max_offset)
+    return [int(x * scale) for x in wave]
 
  
 def centre_wave(wave):
@@ -108,3 +114,13 @@ def centre_wave(wave):
     min_range = max(below_origin) if below_origin else 0
     offset = (max_range - min_range) >> 1
     return [x - offset for x in wave]
+
+
+if __name__ == '__main__':
+    def print_list(l):
+        print([x + 0x7F for x in l])
+    print_list(sine_wave())
+    print_list(triangle_wave())
+    print_list(sawtooth_wave())
+    print_list(reverse_sawtooth_wave())
+    print_list(square_wave())
