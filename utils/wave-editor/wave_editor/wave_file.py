@@ -211,9 +211,9 @@ class ExportAsmFormatter(object):
         else:
             prefix = self.AVRASM2_ROW_PREFIX
 
-        for r in range(0, self.wave_table.wave_length / 16):
+        for r in range(0, wave_functions.WAVE_LENGTH / 16):
             samples = self.wave_table[r * 16:(r + 1) * 16]
-            print(prefix, ','.join("0x{:02X}".format(s) for s in samples), sep='', file=f)
+            print(prefix, ','.join("0x{:02X}".format(wave_functions.ORIGIN + s) for s in samples), sep='', file=f)
 
 
 class ExportCFormatter(object):
@@ -241,8 +241,8 @@ class ExportCFormatter(object):
             file=f
         )
 
-        for r in range(0, self.wave_table.wave_length / 16):
+        for r in range(0, wave_functions.WAVE_LENGTH / 16):
             samples = self.wave_table[r * 16:(r + 1) * 16]
-            print('\t', ','.join("0x{:02X}".format(s) for s in samples), ',', sep='', file=f)
+            print('\t', ','.join("0x{:02X}".format(wave_functions.ORIGIN + s) for s in samples), ',', sep='', file=f)
 
         print("};", file=f)

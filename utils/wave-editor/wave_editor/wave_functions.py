@@ -43,11 +43,11 @@ def triangle_wave():
 
     def wave_func(x):
         if 0 <= x < quarter_wave:
-            return x << 1
+            return int(x * (MAX_OFFSET / quarter_wave) + 0.5)
         elif quarter_wave <= x < three_quarter_wave:
-            return (MAX_OFFSET - x) << 1
+            return int(MAX_OFFSET + (x - quarter_wave) * -(MAX_OFFSET / quarter_wave) + 0.5)
         else:
-            return -0x80 + ((x - three_quarter_wave) << 1)
+            return int(-MAX_OFFSET + (x - three_quarter_wave) * (MAX_OFFSET / quarter_wave) + 0.5)
 
     return [wave_func(x) for x in range(WAVE_LENGTH)]
 
@@ -114,3 +114,13 @@ def centre_wave(wave):
     min_range = max(below_origin) if below_origin else 0
     offset = (max_range - min_range) >> 1
     return [x - offset for x in wave]
+
+
+if __name__ == '__main__':
+    def print_list(l):
+        print([x + 0x7F for x in l])
+    print_list(sine_wave())
+    print_list(triangle_wave())
+    print_list(sawtooth_wave())
+    print_list(reverse_sawtooth_wave())
+    print_list(square_wave())

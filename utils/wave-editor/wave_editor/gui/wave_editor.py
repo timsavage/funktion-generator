@@ -32,11 +32,14 @@ class WaveDocumentEditor(QtGui.QGraphicsView):
             event.ignore()
 
     def wheelEvent(self, event):
-        delta = event.delta()
-        if delta > 0:
-            self.zoomIn()
-        elif delta < 0:
-            self.zoomOut()
+        if event.modifiers() == QtCore.Qt.ControlModifier:
+            delta = event.delta()
+            if delta > 0:
+                self.zoomIn()
+            elif delta < 0:
+                self.zoomOut()
+        else:
+            super(WaveDocumentEditor, self).wheelEvent(event)
 
     def newFile(self):
         """
